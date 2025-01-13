@@ -1,3 +1,4 @@
+import { IconArrowDown } from '@tabler/icons-react';
 import { motion } from 'framer-motion';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -25,12 +26,15 @@ export const MenuItem = ({
 }) => {
     return (
         <div className="relative " onMouseEnter={() => setActive(item)}>
-            <motion.p
-                className="cursor-pointer text-black hover:opacity-[0.9] dark:text-white inline-block px-4 py-2 rounded-md hover:bg-gray-50 focus:relative dark:text-gray-200 dark:hover:bg-gray-800"
+            <motion.div
+                className="cursor-pointer text-black hover:opacity-[0.9] dark:text-white group relative inline-flex h-12 items-center justify-center overflow-hidden rounded-md bg-neutral-950 px-6 font-medium text-neutral-200 duration-500"
                 transition={{ duration: 0.3 }}
             >
-                {item}
-            </motion.p>
+                <div className="translate-y-0 opacity-100 transition group-hover:-translate-y-[150%] group-hover:opacity-0">
+                    {item}
+                </div>
+                <IconArrowDown className="absolute translate-y-[150%] opacity-0 transition group-hover:translate-y-0 group-hover:opacity-100" />
+            </motion.div>
             {active !== null && (
                 <motion.div
                     animate={{ opacity: 1, scale: 1, y: 0 }}
@@ -100,8 +104,14 @@ export const ProductItem = ({
 
 export const HoveredLink = ({ children, ...rest }: any) => {
     return (
-        <Link {...rest} className="text-neutral-700 dark:text-neutral-200 hover:text-white ">
-            {children}
+        <Link
+            {...rest}
+            className="text-neutral-700 dark:text-neutral-200 hover:text-white group relative inline-flex items-center justify-center overflow-hidden bg-neutral-950 "
+        >
+            <span>{children}</span>
+            <div className="absolute inset-0 flex h-full w-full justify-center [transform:skew(-12deg)_translateX(-100%)] group-hover:duration-1000 group-hover:[transform:skew(-12deg)_translateX(100%)]">
+                <div className="relative h-full w-8 bg-white/20"></div>
+            </div>
         </Link>
     );
 };

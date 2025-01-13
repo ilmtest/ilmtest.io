@@ -71,7 +71,7 @@ export const TextRevealCard = ({
         >
             {children}
 
-            <div className="h-40  relative flex items-center overflow-hidden">
+            <div className="h-40 relative flex items-center overflow-hidden">
                 <motion.div
                     animate={
                         isMouseOver
@@ -108,8 +108,11 @@ export const TextRevealCard = ({
                     transition={isMouseOver ? { duration: 0 } : { duration: 0.4 }}
                 ></motion.div>
 
-                <div className=" overflow-hidden [mask-image:linear-gradient(to_bottom,transparent,white,transparent)]">
-                    <p className="text-base sm:text-[3rem] py-10 font-bold bg-clip-text text-transparent bg-[#323238]">
+                <div className=" overflow-hidden [mask-image:linear-gradient(to_bottom,transparent,white,transparent)] w-full">
+                    <p
+                        className="text-base sm:text-[3rem] py-10 font-bold bg-clip-text text-transparent bg-[#323238] w-full"
+                        dir="rtl"
+                    >
                         {text}
                     </p>
                     <MemoizedStars />
@@ -120,7 +123,7 @@ export const TextRevealCard = ({
 };
 
 export const TextRevealCardTitle = ({ children, className }: { children: React.ReactNode; className?: string }) => {
-    return <h2 className={twMerge('text-white text-lg mb-2', className)}>{children}</h2>;
+    return <h2 className={twMerge('text-white text-md mb-2', className)}>{children}</h2>;
 };
 
 export const TextRevealCardDescription = ({
