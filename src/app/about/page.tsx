@@ -1,4 +1,5 @@
 import { HoverEffect } from '@/components/HoverEffect';
+import { HoverImageLink } from '@/components/HoverImageLink';
 import { FloatingPhone } from '@/components/Phone';
 import { SimpleSpotlight } from '@/components/SimpleSpotlight';
 
@@ -58,6 +59,28 @@ export default function About() {
                     label="Quran10"
                     screenshot="/quran10.png"
                 />
+            </section>
+            <section className="bg-neutral-950 p-4 md:p-8">
+                <div className="mx-auto max-w-5xl">
+                    <HoverImageLink
+                        heading="Quran10"
+                        href="https://youtu.be/YOXtjnNWVZM"
+                        imgSrc="/quran10.png"
+                        subheading="Native Quran app for BlackBerry 10 with integrated tafāsir for each verse, recitations, similar verses, and multiple translations."
+                    />
+                    <HoverImageLink
+                        heading="Salat10"
+                        href="https://youtu.be/Y4QjODg6SR4"
+                        imgSrc="/salat10.png"
+                        subheading="We work with great people"
+                    />
+                    <HoverImageLink
+                        heading="Sunnah10"
+                        href="https://youtu.be/S1S_adzlGpM"
+                        imgSrc="/sunnah10.png"
+                        subheading="Our work speaks for itself"
+                    />
+                </div>
             </section>
         </>
     );

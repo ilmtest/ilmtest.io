@@ -90,6 +90,7 @@ const Screen: React.FC<ScreenProps> = ({ color, hoverLabel, href, label, screens
                 <div className="translate-x-0 transition group-hover:-translate-x-[300%]">{label}</div>
                 <div className="absolute translate-x-[300%] transition group-hover:translate-x-0">{hoverLabel}</div>
             </a>
+
             <div
                 className="absolute -bottom-0 left-[50%] h-18 w-96 -translate-x-[50%] opacity-65"
                 style={{ backgroundColor: color }}
