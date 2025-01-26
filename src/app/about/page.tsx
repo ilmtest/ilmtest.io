@@ -3,6 +3,8 @@ import { HoverImageLink } from '@/components/HoverImageLink';
 import { FloatingPhone } from '@/components/Phone';
 import { SimpleSpotlight } from '@/components/SimpleSpotlight';
 
+import Navbar from '../NavBar';
+
 const beliefs = [
     {
         description:
@@ -39,9 +41,10 @@ const beliefs = [
 export default function About() {
     return (
         <>
-            <div className="h-[20rem] w-full rounded-md flex md:items-center md:justify-center bg-black/[0.96] antialiased bg-grid-white/[0.02] relative overflow-hidden">
+            <Navbar />
+            <div className="h-[20rem] pt-50 w-full rounded-md flex md:items-center md:justify-center bg-black/[0.96] antialiased bg-grid-white/[0.02] relative overflow-hidden">
                 <SimpleSpotlight />
-                <div className=" p-4 max-w-7xl  mx-auto relative z-10  w-full pt-20 md:pt-0">
+                <div className="p-4 max-w-7xl mx-auto relative z-10 w-full pt-20 md:pt-0">
                     <h1 className="text-4xl md:text-7xl font-bold text-center bg-clip-text text-transparent bg-gradient-to-b from-neutral-50 to-neutral-400 bg-opacity-50">
                         Who
                         <br /> Are We?
@@ -61,24 +64,33 @@ export default function About() {
                 />
             </section>
             <section className="bg-neutral-950 p-4 md:p-8">
+                <div className="relative overflow-hidden group flex justify-center min-h-[2.5rem]">
+                    <span className="invisible">Hover over me</span>
+                    <span className="absolute top-0 left-1/2 -translate-x-1/2 text-2xl md:text-3xl font-bold text-center bg-clip-text text-transparent bg-gradient-to-b from-neutral-50 to-neutral-400 bg-opacity-50 group-hover:-translate-y-full transition-transform ease-in-out duration-500 hover:duration-300">
+                        Our Apps
+                    </span>
+                    <span className="absolute top-0 left-1/2 -translate-x-1/2 text-2xl md:text-3xl font-bold text-center bg-clip-text text-transparent bg-gradient-to-b from-neutral-50 to-neutral-400 bg-opacity-50 translate-y-full group-hover:translate-y-0 transition-transform ease-in-out duration-500 hover:duration-300 w-full">
+                        Our team iterated in the development on these apps with students of knowledge.
+                    </span>
+                </div>
                 <div className="mx-auto max-w-5xl">
                     <HoverImageLink
                         heading="Quran10"
                         href="https://youtu.be/YOXtjnNWVZM"
                         imgSrc="/quran10.png"
-                        subheading="Native Quran app for BlackBerry 10 with integrated tafāsir for each verse, recitations, similar verses, and multiple translations."
+                        subheading="Quran app for BlackBerry 10 with integrated tafāsir for each verse, recitations, similar verses, and multiple translations."
                     />
                     <HoverImageLink
                         heading="Salat10"
                         href="https://youtu.be/Y4QjODg6SR4"
                         imgSrc="/salat10.png"
-                        subheading="We work with great people"
+                        subheading="Prayer times calculator"
                     />
                     <HoverImageLink
                         heading="Sunnah10"
                         href="https://youtu.be/S1S_adzlGpM"
                         imgSrc="/sunnah10.png"
-                        subheading="Our work speaks for itself"
+                        subheading="Books of hadith, similar narration grouping, hadith explanations from the scholars."
                     />
                 </div>
             </section>

@@ -3,18 +3,16 @@
 import { FeaturesSectionDemo } from '@/components/Features';
 import { Footer } from '@/components/Footer';
 import { HeroParallax } from '@/components/HeroParallax';
-import PreLoader from '@/components/Preloader';
 import { StatsRow } from '@/components/StatsRow';
 import { TextRevealCard, TextRevealCardDescription, TextRevealCardTitle } from '@/components/TextRevealCard';
 import { socials } from '@/data/socials';
 
-import { NavbarDemo } from './NavBar';
+import Navbar from './NavBar';
 
 export default function Home() {
     return (
         <>
-            <PreLoader />
-            <NavbarDemo />
+            <Navbar />
             <HeroParallax products={socials} />
             <StatsRow />
             <div className="my-12 flex w-full flex-col items-center justify-center">
