@@ -62,6 +62,7 @@ const HeaderBar: React.FC<HeaderBarProps> = ({ color }) => {
 
 interface ScreenProps {
     color: string;
+    hoverLabel: string;
     href: string;
     label: string;
     screenshot: string;
