@@ -1,7 +1,6 @@
 import type { NextConfig } from 'next';
 
 const nextConfig: NextConfig = {
-    basePath: '/ilmtest.io',
     images: {
         remotePatterns: [
             {
@@ -12,9 +11,10 @@ const nextConfig: NextConfig = {
                 search: '',
             },
         ],
-        unoptimized: true,
+        unoptimized: true, // Disable server-based image optimization. Next.js does not support dynamic features with static exports
     },
-    output: 'export',
+    output: 'export', // enables static exports which is needed for GitHub Pages
+    trailingSlash: true,
 };
 
 export default nextConfig;

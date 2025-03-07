@@ -113,18 +113,18 @@ export const ProductCard = ({
                 y: -20,
             }}
         >
-            <Link className="block group-hover/product:shadow-2xl " href={product.link}>
-                <Image
-                    alt={product.title}
-                    className="object-cover object-left-top absolute h-full w-full inset-0"
-                    height="600"
-                    src={product.thumbnail}
-                    width="600"
-                />
-            </Link>
+            <Image
+                alt={product.title}
+                className="object-cover object-left-top absolute h-full w-full inset-0"
+                height="600"
+                src={product.thumbnail}
+                width="600"
+            />
             <div className="absolute inset-0 h-full w-full opacity-0 group-hover/product:opacity-80 bg-black pointer-events-none"></div>
             <h2 className="absolute bottom-4 left-4 opacity-0 group-hover/product:opacity-100 text-white">
-                {product.title}
+                <Link className="block group-hover/product:shadow-2xl " href={product.link} target="_blank">
+                    {product.title}
+                </Link>
             </h2>
         </motion.div>
     );
