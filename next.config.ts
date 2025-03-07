@@ -1,35 +1,18 @@
 import type { NextConfig } from 'next';
 
 const nextConfig: NextConfig = {
+    basePath: '/ilmtest.io',
     images: {
         remotePatterns: [
             {
-                hostname: 'aceternity.com',
-                pathname: '/images/**',
+                hostname: 'pbs.twimg.com',
+                pathname: '/media/**',
                 port: '',
                 protocol: 'https',
                 search: '',
-            },
-            {
-                hostname: 'assets.aceternity.com',
-                pathname: '/**',
-                port: '',
-                protocol: 'https',
-                search: '',
-            },
-            {
-                hostname: 'images.unsplash.com',
-                pathname: '/**',
-                port: '',
-                protocol: 'https',
-            },
-            {
-                hostname: 'api.microlink.io',
-                pathname: '/**',
-                port: '',
-                protocol: 'https',
             },
         ],
+        unoptimized: true,
     },
 };
 

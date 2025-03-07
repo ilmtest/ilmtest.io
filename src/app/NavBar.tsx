@@ -19,7 +19,7 @@ export default function Navbar({ className }: { className?: string }) {
                         <ProductItem
                             description="Problem statement"
                             href="/history"
-                            src="https://assets.aceternity.com/demos/tailwindmasterkit.webp"
+                            src="https://pbs.twimg.com/media/EaB7g8CXQAAp-kM?format=jpg"
                             title="History"
                         />
                     </div>
