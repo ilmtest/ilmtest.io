@@ -22,12 +22,6 @@ export default function Navbar({ className }: { className?: string }) {
                             src="https://assets.aceternity.com/demos/tailwindmasterkit.webp"
                             title="History"
                         />
-                        <ProductItem
-                            description="Prepare for tech interviews like never before."
-                            href="https://algochurn.com"
-                            src="https://assets.aceternity.com/demos/algochurn.webp"
-                            title="Whitepaper"
-                        />
                     </div>
                 </MenuItem>
             </Menu>
