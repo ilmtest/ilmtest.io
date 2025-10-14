@@ -1,9 +1,10 @@
 'use client';
 
-import { cn } from '@/lib/utils';
 import { motion } from 'framer-motion';
-import React, { memo, useEffect, useRef, useState } from 'react';
+import type React from 'react';
+import { memo, useEffect, useRef, useState } from 'react';
 import { twMerge } from 'tailwind-merge';
+import { cn } from '@/lib/utils';
 
 export const TextRevealCard = ({
     children,
@@ -47,7 +48,7 @@ export const TextRevealCard = ({
     function mouseEnterHandler() {
         setIsMouseOver(true);
     }
-    function touchMoveHandler(event: React.TouchEvent<HTMLDivElement>) {
+    function touchMoveHandler(event: React.TouchEvent<HTMLButtonElement>) {
         event.preventDefault();
         const clientX = event.touches[0]!.clientX;
         if (cardRef.current) {
@@ -58,9 +59,10 @@ export const TextRevealCard = ({
 
     const rotateDeg = (widthPercentage - 50) * 0.1;
     return (
-        <div
+        <button
+            type="button"
             className={cn(
-                'bg-[#1d1c20] border border-white/[0.08] w-[80rem] rounded-lg p-8 relative overflow-hidden',
+                'relative w-[80rem] overflow-hidden rounded-lg border border-white/[0.08] bg-[#1d1c20] p-8',
                 className,
             )}
             onMouseEnter={mouseEnterHandler}
@@ -73,7 +75,7 @@ export const TextRevealCard = ({
         >
             {children}
 
-            <div className="h-40 relative flex items-center overflow-hidden">
+            <div className="relative flex h-40 items-center overflow-hidden">
                 <motion.div
                     animate={
                         isMouseOver
@@ -81,21 +83,15 @@ export const TextRevealCard = ({
                                   clipPath: `inset(0 ${100 - widthPercentage}% 0 0)`,
                                   opacity: widthPercentage > 0 ? 1 : 0,
                               }
-                            : {
-                                  clipPath: `inset(0 ${100 - widthPercentage}% 0 0)`,
-                              }
+                            : { clipPath: `inset(0 ${100 - widthPercentage}% 0 0)` }
                     }
-                    className="absolute bg-[#1d1c20] z-20  will-change-transform"
-                    style={{
-                        width: '100%',
-                    }}
+                    className="absolute z-20 bg-[#1d1c20] will-change-transform"
+                    style={{ width: '100%' }}
                     transition={isMouseOver ? { duration: 0 } : { duration: 0.4 }}
                 >
                     <p
-                        className="text-base sm:text-[3rem] py-10 font-bold text-white bg-clip-text text-transparent bg-gradient-to-b from-white to-neutral-300"
-                        style={{
-                            textShadow: '4px 4px 15px rgba(0,0,0,0.5)',
-                        }}
+                        className="bg-gradient-to-b from-white to-neutral-300 bg-clip-text py-10 font-bold text-base text-transparent text-white sm:text-[3rem]"
+                        style={{ textShadow: '4px 4px 15px rgba(0,0,0,0.5)' }}
                     >
                         {revealText}
                     </p>
@@ -106,13 +102,13 @@ export const TextRevealCard = ({
                         opacity: widthPercentage > 0 ? 1 : 0,
                         rotate: `${rotateDeg}deg`,
                     }}
-                    className="h-40 w-[8px] bg-gradient-to-b from-transparent via-neutral-800 to-transparent absolute z-50 will-change-transform"
+                    className="absolute z-50 h-40 w-[8px] bg-gradient-to-b from-transparent via-neutral-800 to-transparent will-change-transform"
                     transition={isMouseOver ? { duration: 0 } : { duration: 0.4 }}
                 ></motion.div>
 
-                <div className=" overflow-hidden [mask-image:linear-gradient(to_bottom,transparent,white,transparent)] w-full">
+                <div className="w-full overflow-hidden [mask-image:linear-gradient(to_bottom,transparent,white,transparent)]">
                     <p
-                        className="text-base sm:text-[3rem] py-10 font-bold bg-clip-text text-transparent bg-[#323238] w-full"
+                        className="w-full bg-[#323238] bg-clip-text py-10 font-bold text-base text-transparent sm:text-[3rem]"
                         dir="rtl"
                     >
                         {text}
@@ -120,12 +116,12 @@ export const TextRevealCard = ({
                     <MemoizedStars />
                 </div>
             </div>
-        </div>
+        </button>
     );
 };
 
 export const TextRevealCardTitle = ({ children, className }: { children: React.ReactNode; className?: string }) => {
-    return <h2 className={twMerge('text-white text-md mb-2', className)}>{children}</h2>;
+    return <h2 className={twMerge('mb-2 text-md text-white', className)}>{children}</h2>;
 };
 
 export const TextRevealCardDescription = ({
@@ -144,7 +140,7 @@ const Stars = () => {
     useEffect(() => {
         const generateSparkles = () =>
             [...Array(80)].map(() => ({
-                duration: Math.random() * 10 + 5, // Random duration between 5-15s
+                duration: Math.random() * 10 + 5,
                 left: Math.random() * 100,
                 opacity: Math.random(),
                 top: Math.random() * 100,
@@ -162,12 +158,8 @@ const Stars = () => {
                         opacity: Math.random(),
                         top: `${Math.random() * 100}%`,
                     }}
-                    initial={{
-                        left: `${sparkle.left}%`,
-                        opacity: sparkle.opacity,
-                        top: `${sparkle.top}%`,
-                    }}
-                    key={`star-${i}`}
+                    initial={{ left: `${sparkle.left}%`, opacity: sparkle.opacity, top: `${sparkle.top}%` }}
+                    key={`star-${i.toString()}`}
                     style={{
                         backgroundColor: 'white',
                         borderRadius: '50%',
@@ -176,11 +168,7 @@ const Stars = () => {
                         width: '2px',
                         zIndex: 1,
                     }}
-                    transition={{
-                        duration: sparkle.duration,
-                        ease: 'linear',
-                        repeat: Infinity,
-                    }}
+                    transition={{ duration: sparkle.duration, ease: 'linear', repeat: Infinity }}
                 ></motion.span>
             ))}
         </div>

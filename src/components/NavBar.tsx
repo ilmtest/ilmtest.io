@@ -4,7 +4,14 @@ import Image from 'next/image';
 import Link from 'next/link';
 import type React from 'react';
 
-const transition = { damping: 11.5, mass: 0.5, restDelta: 0.001, restSpeed: 0.001, stiffness: 100, type: 'spring' };
+const transition = {
+    damping: 11.5,
+    mass: 0.5,
+    restDelta: 0.001,
+    restSpeed: 0.001,
+    stiffness: 100,
+    type: 'spring',
+} as const;
 
 export const MenuItem = ({
     active,
@@ -18,7 +25,7 @@ export const MenuItem = ({
     setActive: (item: string) => void;
 }) => {
     return (
-        <div className="relative" onMouseEnter={() => setActive(item)}>
+        <button type="button" className="relative" onMouseEnter={() => setActive(item)}>
             <motion.div
                 className="group relative inline-flex h-12 cursor-pointer items-center justify-center overflow-hidden rounded-md bg-neutral-950 px-6 font-medium text-black text-neutral-200 duration-500 hover:opacity-[0.9] dark:text-white"
                 transition={{ duration: 0.3 }}
@@ -52,7 +59,7 @@ export const MenuItem = ({
                     )}
                 </motion.div>
             )}
-        </div>
+        </button>
     );
 };
 

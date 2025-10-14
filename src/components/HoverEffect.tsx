@@ -1,26 +1,25 @@
 'use client';
 
-import { cn } from '@/lib/utils';
 import { AnimatePresence, motion } from 'framer-motion';
-import React, { useState } from 'react';
+import type React from 'react';
+import { useState } from 'react';
+import { cn } from '@/lib/utils';
 
 export const HoverEffect = ({
     className,
     items,
 }: {
     className?: string;
-    items: {
-        description: string;
-        title: string;
-    }[];
+    items: { description: string; title: string }[];
 }) => {
     const [hoveredIndex, setHoveredIndex] = useState<null | number>(null);
 
     return (
-        <div className={cn('grid grid-cols-1 md:grid-cols-2  lg:grid-cols-3  py-10', className)}>
+        <div className={cn('grid grid-cols-1 py-10 md:grid-cols-2 lg:grid-cols-3', className)}>
             {items.map((item, idx) => (
-                <div
-                    className="relative group  block p-2 h-full w-full"
+                <button
+                    type="button"
+                    className="group relative block h-full w-full p-2"
                     key={item?.title}
                     onMouseEnter={() => setHoveredIndex(idx)}
                     onMouseLeave={() => setHoveredIndex(null)}
@@ -28,15 +27,9 @@ export const HoverEffect = ({
                     <AnimatePresence>
                         {hoveredIndex === idx && (
                             <motion.span
-                                animate={{
-                                    opacity: 1,
-                                    transition: { duration: 0.15 },
-                                }}
-                                className="absolute inset-0 h-full w-full bg-neutral-200 dark:bg-slate-800/[0.8] block  rounded-3xl"
-                                exit={{
-                                    opacity: 0,
-                                    transition: { delay: 0.2, duration: 0.15 },
-                                }}
+                                animate={{ opacity: 1, transition: { duration: 0.15 } }}
+                                className="absolute inset-0 block h-full w-full rounded-3xl bg-neutral-200 dark:bg-slate-800/[0.8]"
+                                exit={{ opacity: 0, transition: { delay: 0.2, duration: 0.15 } }}
                                 initial={{ opacity: 0 }}
                                 layoutId="hoverBackground"
                             />
@@ -46,7 +39,7 @@ export const HoverEffect = ({
                         <CardTitle>{item.title}</CardTitle>
                         <CardDescription>{item.description}</CardDescription>
                     </Card>
-                </div>
+                </button>
             ))}
         </div>
     );
@@ -56,7 +49,7 @@ export const Card = ({ children, className }: { children: React.ReactNode; class
     return (
         <div
             className={cn(
-                'rounded-2xl h-full w-full p-4 overflow-hidden bg-black border border-transparent dark:border-white/[0.2] group-hover:border-slate-700 relative z-20',
+                'relative z-20 h-full w-full overflow-hidden rounded-2xl border border-transparent bg-black p-4 group-hover:border-slate-700 dark:border-white/[0.2]',
                 className,
             )}
         >
@@ -67,8 +60,8 @@ export const Card = ({ children, className }: { children: React.ReactNode; class
     );
 };
 export const CardTitle = ({ children, className }: { children: React.ReactNode; className?: string }) => {
-    return <h4 className={cn('text-zinc-100 font-bold tracking-wide mt-4', className)}>{children}</h4>;
+    return <h4 className={cn('mt-4 font-bold text-zinc-100 tracking-wide', className)}>{children}</h4>;
 };
 export const CardDescription = ({ children, className }: { children: React.ReactNode; className?: string }) => {
-    return <p className={cn('mt-8 text-zinc-400 tracking-wide leading-relaxed text-sm', className)}>{children}</p>;
+    return <p className={cn('mt-8 text-sm text-zinc-400 leading-relaxed tracking-wide', className)}>{children}</p>;
 };

@@ -2,7 +2,9 @@
 
 import { IconArrowRight } from '@tabler/icons-react';
 import { motion, useMotionValue, useSpring, useTransform } from 'framer-motion';
-import React, { useRef } from 'react';
+import Image from 'next/image';
+import type React from 'react';
+import { useRef } from 'react';
 
 interface LinkProps {
     heading: string;
@@ -41,7 +43,7 @@ export const HoverImageLink = ({ heading, href, imgSrc, subheading }: LinkProps)
 
     return (
         <motion.a
-            className="group relative flex items-center justify-between border-b-2 border-neutral-700 py-4 transition-colors duration-500 hover:border-neutral-50 md:py-8"
+            className="group relative flex items-center justify-between border-neutral-700 border-b-2 py-4 transition-colors duration-500 hover:border-neutral-50 md:py-8"
             href={href}
             initial="initial"
             onMouseMove={handleMouseMove}
@@ -51,26 +53,16 @@ export const HoverImageLink = ({ heading, href, imgSrc, subheading }: LinkProps)
         >
             <div>
                 <motion.span
-                    className="relative z-10 block text-4xl font-bold text-neutral-500 transition-colors duration-500 group-hover:text-neutral-50 md:text-6xl"
-                    transition={{
-                        delayChildren: 0.25,
-                        staggerChildren: 0.075,
-                        type: 'spring',
-                    }}
-                    variants={{
-                        initial: { x: 0 },
-                        whileHover: { x: -16 },
-                    }}
+                    className="relative z-10 block font-bold text-4xl text-neutral-500 transition-colors duration-500 group-hover:text-neutral-50 md:text-6xl"
+                    transition={{ delayChildren: 0.25, staggerChildren: 0.075, type: 'spring' }}
+                    variants={{ initial: { x: 0 }, whileHover: { x: -16 } }}
                 >
                     {heading.split('').map((l, i) => (
                         <motion.span
                             className="inline-block"
-                            key={i}
+                            key={i.toString()}
                             transition={{ type: 'spring' }}
-                            variants={{
-                                initial: { x: 0 },
-                                whileHover: { x: 16 },
-                            }}
+                            variants={{ initial: { x: 0 }, whileHover: { x: 16 } }}
                         >
                             {l}
                         </motion.span>
@@ -81,36 +73,19 @@ export const HoverImageLink = ({ heading, href, imgSrc, subheading }: LinkProps)
                 </span>
             </div>
 
-            <motion.img
-                alt={`Image representing a link for ${heading}`}
-                className="absolute z-0 h-24 w-32 rounded-lg object-cover md:h-48 md:w-64"
-                src={imgSrc}
-                style={{
-                    left,
-                    top,
-                    translateX: '-50%',
-                    translateY: '-50%',
-                }}
+            <motion.div
+                className="absolute z-0 h-24 w-32 overflow-hidden rounded-lg md:h-48 md:w-64"
+                style={{ left, top, translateX: '-50%', translateY: '-50%' }}
                 transition={{ type: 'spring' }}
-                variants={{
-                    initial: { rotate: '-12.5deg', scale: 0 },
-                    whileHover: { rotate: '12.5deg', scale: 1 },
-                }}
-            />
+                variants={{ initial: { rotate: '-12.5deg', scale: 0 }, whileHover: { rotate: '12.5deg', scale: 1 } }}
+            >
+                <Image alt={`Image representing a link for ${heading}`} className="object-cover" src={imgSrc} fill />
+            </motion.div>
 
             <motion.div
                 className="relative z-10 p-4"
                 transition={{ type: 'spring' }}
-                variants={{
-                    initial: {
-                        opacity: 0,
-                        x: '25%',
-                    },
-                    whileHover: {
-                        opacity: 1,
-                        x: '0%',
-                    },
-                }}
+                variants={{ initial: { opacity: 0, x: '25%' }, whileHover: { opacity: 1, x: '0%' } }}
             >
                 <IconArrowRight className="text-5xl text-neutral-50" />
             </motion.div>
