@@ -1,26 +1,28 @@
 import { IconBrandGithub, IconBrandInstagram } from '@tabler/icons-react';
-import React from 'react';
+import type React from 'react';
 
 const TooltipIcons = () => {
     return (
-        <div className="flex justify-around gap-4 items-center px-4 py-1 bg-black rounded-[15px] ring-1 ring-white">
+        <div className="flex items-center justify-around gap-4 rounded-[15px] bg-black px-4 py-1 ring-1 ring-white">
             <a
-                className="relative group hover:cursor-pointer hover:bg-slate-800 p-2 rounded-full transition-all duration-500"
+                className="group relative rounded-full p-2 transition-all duration-500 hover:cursor-pointer hover:bg-slate-800"
                 href="https://github.com/ilmtest"
                 target="_blank"
+                rel="noopener"
             >
                 <IconBrandGithub />
-                <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-4 w-max px-2 py-1 text-white bg-black rounded-md opacity-0 scale-50 transition-all duration-500 group-hover:opacity-100 group-hover:scale-100">
+                <div className="-translate-x-1/2 absolute bottom-full left-1/2 mb-4 w-max scale-50 transform rounded-md bg-black px-2 py-1 text-white opacity-0 transition-all duration-500 group-hover:scale-100 group-hover:opacity-100">
                     GitHub
                 </div>
             </a>
             <a
-                className="relative group hover:cursor-pointer hover:bg-slate-800 p-2 rounded-full transition-all duration-500"
+                className="group relative rounded-full p-2 transition-all duration-500 hover:cursor-pointer hover:bg-slate-800"
                 href="https://instagram.com/ilmtest"
                 target="_blank"
+                rel="noopener"
             >
                 <IconBrandInstagram />
-                <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-4 w-max px-2 py-1 text-white bg-black rounded-md opacity-0 transform scale-50 transition-all duration-500 group-hover:opacity-100 group-hover:scale-100">
+                <div className="-translate-x-1/2 absolute bottom-full left-1/2 mb-4 w-max scale-50 transform rounded-md bg-black px-2 py-1 text-white opacity-0 transition-all duration-500 group-hover:scale-100 group-hover:opacity-100">
                     Instagram
                 </div>
             </a>
@@ -36,7 +38,7 @@ export const Footer: React.FC = () => {
                     <TooltipIcons />
                 </div>
 
-                <p className="mt-6 text-center text-sm text-gray-600 dark:text-gray-100">
+                <p className="mt-6 text-center text-gray-600 text-sm dark:text-gray-100">
                     &copy; {new Date().getFullYear()} IlmTest. All rights reserved.
                 </p>
             </div>

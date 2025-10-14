@@ -2,7 +2,7 @@ import { IconArrowDown } from '@tabler/icons-react';
 import { motion } from 'framer-motion';
 import Image from 'next/image';
 import Link from 'next/link';
-import React from 'react';
+import type React from 'react';
 
 const transition = {
     damping: 11.5,
@@ -11,7 +11,7 @@ const transition = {
     restSpeed: 0.001,
     stiffness: 100,
     type: 'spring',
-};
+} as const;
 
 export const MenuItem = ({
     active,
@@ -25,12 +25,12 @@ export const MenuItem = ({
     setActive: (item: string) => void;
 }) => {
     return (
-        <div className="relative " onMouseEnter={() => setActive(item)}>
+        <button type="button" className="relative" onMouseEnter={() => setActive(item)}>
             <motion.div
-                className="cursor-pointer text-black hover:opacity-[0.9] dark:text-white group relative inline-flex h-12 items-center justify-center overflow-hidden rounded-md bg-neutral-950 px-6 font-medium text-neutral-200 duration-500"
+                className="group relative inline-flex h-12 cursor-pointer items-center justify-center overflow-hidden rounded-md bg-neutral-950 px-6 font-medium text-black text-neutral-200 duration-500 hover:opacity-[0.9] dark:text-white"
                 transition={{ duration: 0.3 }}
             >
-                <div className="translate-y-0 opacity-100 transition group-hover:-translate-y-[150%] group-hover:opacity-0">
+                <div className="group-hover:-translate-y-[150%] translate-y-0 opacity-100 transition group-hover:opacity-0">
                     {item}
                 </div>
                 <IconArrowDown className="absolute translate-y-[150%] opacity-0 transition group-hover:translate-y-0 group-hover:opacity-100" />
@@ -42,14 +42,14 @@ export const MenuItem = ({
                     transition={transition}
                 >
                     {active === item && (
-                        <div className="absolute top-[calc(100%_+_1.2rem)] left-1/2 transform -translate-x-1/2 pt-4">
+                        <div className="-translate-x-1/2 absolute top-[calc(100%_+_1.2rem)] left-1/2 transform pt-4">
                             <motion.div
-                                className="bg-white dark:bg-black backdrop-blur-sm rounded-2xl overflow-hidden border border-black/[0.2] dark:border-white/[0.2] shadow-xl"
+                                className="overflow-hidden rounded-2xl border border-black/[0.2] bg-white shadow-xl backdrop-blur-sm dark:border-white/[0.2] dark:bg-black"
                                 layoutId="active" // layoutId ensures smooth animation
                                 transition={transition}
                             >
                                 <motion.div
-                                    className="w-max h-full p-4"
+                                    className="h-full w-max p-4"
                                     layout // layout ensures smooth animation
                                 >
                                     {children}
@@ -59,7 +59,7 @@ export const MenuItem = ({
                     )}
                 </motion.div>
             )}
-        </div>
+        </button>
     );
 };
 
@@ -72,7 +72,7 @@ export const Menu = ({
 }) => {
     return (
         <nav
-            className="relative rounded-full border border-transparent dark:bg-black/80 dark:border-white/[0.2] bg-white shadow-input flex justify-center space-x-4 px-8 py-6 "
+            className="relative flex justify-center space-x-4 rounded-full border border-transparent bg-white px-8 py-6 shadow-input dark:border-white/[0.2] dark:bg-black/80"
             onMouseLeave={() => setActive(null)} // resets the state
         >
             {children}
@@ -95,8 +95,8 @@ export const ProductItem = ({
         <Link className="flex space-x-2" href={href}>
             <Image alt={title} className="flex-shrink-0 rounded-md shadow-2xl" height={70} src={src} width={140} />
             <div>
-                <h4 className="text-xl font-bold mb-1 text-black dark:text-white">{title}</h4>
-                <p className="text-neutral-700 text-sm max-w-[10rem] dark:text-neutral-300">{description}</p>
+                <h4 className="mb-1 font-bold text-black text-xl dark:text-white">{title}</h4>
+                <p className="max-w-[10rem] text-neutral-700 text-sm dark:text-neutral-300">{description}</p>
             </div>
         </Link>
     );
@@ -106,7 +106,7 @@ export const HoveredLink = ({ children, ...rest }: any) => {
     return (
         <Link
             {...rest}
-            className="text-neutral-700 dark:text-neutral-200 hover:text-white group relative inline-flex items-center justify-center overflow-hidden bg-neutral-950 "
+            className="group relative inline-flex items-center justify-center overflow-hidden bg-neutral-950 text-neutral-700 hover:text-white dark:text-neutral-200"
         >
             <span>{children}</span>
             <div className="absolute inset-0 flex h-full w-full justify-center [transform:skew(-12deg)_translateX(-100%)] group-hover:duration-1000 group-hover:[transform:skew(-12deg)_translateX(100%)]">

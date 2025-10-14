@@ -1,6 +1,6 @@
-import { getDaysActive } from '@/data/socials';
 import { IconBulb, IconClock, IconPencil, IconUser } from '@tabler/icons-react';
-import React from 'react';
+import type React from 'react';
+import { getDaysActive } from '@/data/socials';
 
 interface StatProps {
     label: string;
@@ -12,13 +12,13 @@ interface StatProps {
 const Stat: React.FC<StatProps> = ({ label, percentage, percentageType, value }) => (
     <div className="grow">
         <div className="flex items-center gap-x-2">
-            <p className="text-xs uppercase tracking-wide text-gray-500 dark:text-neutral-500">{label}</p>
+            <p className="text-gray-500 text-xs uppercase tracking-wide dark:text-neutral-500">{label}</p>
         </div>
         <div className="mt-1 flex items-center gap-x-2">
-            <h3 className="text-xl sm:text-2xl font-medium text-gray-800 dark:text-neutral-200">{value}</h3>
+            <h3 className="font-medium text-gray-800 text-xl sm:text-2xl dark:text-neutral-200">{value}</h3>
             {percentage && (
                 <span
-                    className={`inline-flex items-center gap-x-1 py-0.5 px-2 rounded-full ${
+                    className={`inline-flex items-center gap-x-1 rounded-full px-2 py-0.5 ${
                         percentageType === 'positive'
                             ? 'bg-green-100 text-green-900 dark:bg-green-800 dark:text-green-100'
                             : 'bg-red-100 text-red-900 dark:bg-red-800 dark:text-red-100'
@@ -35,7 +35,9 @@ const Stat: React.FC<StatProps> = ({ label, percentage, percentageType, value })
                         viewBox="0 0 24 24"
                         width="24"
                         xmlns="http://www.w3.org/2000/svg"
+                        aria-hidden="true"
                     >
+                        <title>{percentageType === 'positive' ? 'Trend up' : 'Trend down'}</title>
                         <polyline
                             points={
                                 percentageType === 'positive'
@@ -45,7 +47,7 @@ const Stat: React.FC<StatProps> = ({ label, percentage, percentageType, value })
                         />
                         <polyline points="16 7 22 7 22 13" />
                     </svg>
-                    <span className="inline-block text-xs font-medium">{percentage}</span>
+                    <span className="inline-block font-medium text-xs">{percentage}</span>
                 </span>
             )}
         </div>
@@ -58,8 +60,8 @@ interface CardProps {
 }
 
 const Card: React.FC<CardProps> = ({ Icon, statProps }) => (
-    <div className="flex flex-col bg-white border shadow-sm rounded-xl dark:bg-neutral-900 dark:border-neutral-800">
-        <div className="p-4 md:p-5 flex gap-x-4">
+    <div className="flex flex-col rounded-xl border bg-white shadow-sm dark:border-neutral-800 dark:bg-neutral-900">
+        <div className="flex gap-x-4 p-4 md:p-5">
             <Icon className="inline-block size-6 self-center" />
             <Stat {...statProps} />
         </div>
@@ -68,8 +70,8 @@ const Card: React.FC<CardProps> = ({ Icon, statProps }) => (
 
 export const StatsRow: React.FC = () => {
     return (
-        <div className="max-w-[85rem] px-4 py-10 sm:px-6 lg:px-8 lg:py-14 mx-auto">
-            <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
+        <div className="mx-auto max-w-[85rem] px-4 py-10 sm:px-6 lg:px-8 lg:py-14">
+            <div className="grid gap-4 sm:grid-cols-2 sm:gap-6 lg:grid-cols-4">
                 <Card
                     Icon={IconBulb}
                     statProps={{
@@ -80,13 +82,7 @@ export const StatsRow: React.FC = () => {
                     }}
                 />
 
-                <Card
-                    Icon={IconUser}
-                    statProps={{
-                        label: 'Followers',
-                        value: '5107+',
-                    }}
-                />
+                <Card Icon={IconUser} statProps={{ label: 'Followers', value: '5107+' }} />
 
                 <Card
                     Icon={IconPencil}
@@ -98,13 +94,7 @@ export const StatsRow: React.FC = () => {
                     }}
                 />
 
-                <Card
-                    Icon={IconClock}
-                    statProps={{
-                        label: 'Development Hours',
-                        value: '1000+',
-                    }}
-                />
+                <Card Icon={IconClock} statProps={{ label: 'Development Hours', value: '1000+' }} />
             </div>
         </div>
     );

@@ -1,7 +1,6 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import React from 'react';
 
 type SpotlightProps = {
     duration?: number;
@@ -28,28 +27,15 @@ export const SimpleSpotlight = ({
 }: SpotlightProps = {}) => {
     return (
         <motion.div
-            animate={{
-                opacity: 1,
-            }}
+            animate={{ opacity: 1 }}
             className="pointer-events-none absolute inset-0 h-full w-full"
-            initial={{
-                opacity: 0,
-            }}
-            transition={{
-                duration: 1.5,
-            }}
+            initial={{ opacity: 0 }}
+            transition={{ duration: 1.5 }}
         >
             <motion.div
-                animate={{
-                    x: [0, xOffset, 0],
-                }}
-                className="absolute top-0 left-0 w-screen h-screen z-40 pointer-events-none"
-                transition={{
-                    duration,
-                    ease: 'easeInOut',
-                    repeat: Infinity,
-                    repeatType: 'reverse',
-                }}
+                animate={{ x: [0, xOffset, 0] }}
+                className="pointer-events-none absolute top-0 left-0 z-40 h-screen w-screen"
+                transition={{ duration, ease: 'easeInOut', repeat: Infinity, repeatType: 'reverse' }}
             >
                 <div
                     className={`absolute top-0 left-0`}
@@ -83,16 +69,9 @@ export const SimpleSpotlight = ({
             </motion.div>
 
             <motion.div
-                animate={{
-                    x: [0, -xOffset, 0],
-                }}
-                className="absolute top-0 right-0 w-screen h-screen z-40 pointer-events-none"
-                transition={{
-                    duration,
-                    ease: 'easeInOut',
-                    repeat: Infinity,
-                    repeatType: 'reverse',
-                }}
+                animate={{ x: [0, -xOffset, 0] }}
+                className="pointer-events-none absolute top-0 right-0 z-40 h-screen w-screen"
+                transition={{ duration, ease: 'easeInOut', repeat: Infinity, repeatType: 'reverse' }}
             >
                 <div
                     className={`absolute top-0 right-0`}

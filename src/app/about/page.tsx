@@ -42,16 +42,16 @@ export default function About() {
     return (
         <>
             <Navbar />
-            <div className="h-[20rem] pt-50 w-full rounded-md flex md:items-center md:justify-center bg-black/[0.96] antialiased bg-grid-white/[0.02] relative overflow-hidden">
+            <div className="relative flex h-[20rem] w-full overflow-hidden rounded-md bg-black/[0.96] bg-grid-white/[0.02] pt-50 antialiased md:items-center md:justify-center">
                 <SimpleSpotlight />
-                <div className="p-4 max-w-7xl mx-auto relative z-10 w-full pt-20 md:pt-0">
-                    <h1 className="text-4xl md:text-7xl font-bold text-center bg-clip-text text-transparent bg-gradient-to-b from-neutral-50 to-neutral-400 bg-opacity-50">
+                <div className="relative z-10 mx-auto w-full max-w-7xl p-4 pt-20 md:pt-0">
+                    <h1 className="bg-gradient-to-b bg-opacity-50 from-neutral-50 to-neutral-400 bg-clip-text text-center font-bold text-4xl text-transparent md:text-7xl">
                         Who
                         <br /> Are We?
                     </h1>
                 </div>
             </div>
-            <div className="max-w-5xl mx-auto px-8">
+            <div className="mx-auto max-w-5xl px-8">
                 <HoverEffect items={beliefs} />
             </div>
             <section className="grid place-content-center bg-neutral-900 p-12">
@@ -64,12 +64,12 @@ export default function About() {
                 />
             </section>
             <section className="bg-neutral-950 p-4 md:p-8">
-                <div className="relative overflow-hidden group flex justify-center min-h-[2.5rem]">
+                <div className="group relative flex min-h-[2.5rem] justify-center overflow-hidden">
                     <span className="invisible">Hover over me</span>
-                    <span className="absolute top-0 left-1/2 -translate-x-1/2 text-2xl md:text-3xl font-bold text-center bg-clip-text text-transparent bg-gradient-to-b from-neutral-50 to-neutral-400 bg-opacity-50 group-hover:-translate-y-full transition-transform ease-in-out duration-500 hover:duration-300">
+                    <span className="-translate-x-1/2 group-hover:-translate-y-full absolute top-0 left-1/2 bg-gradient-to-b bg-opacity-50 from-neutral-50 to-neutral-400 bg-clip-text text-center font-bold text-2xl text-transparent transition-transform duration-500 ease-in-out hover:duration-300 md:text-3xl">
                         Our Apps
                     </span>
-                    <span className="absolute top-0 left-1/2 -translate-x-1/2 text-2xl md:text-3xl font-bold text-center bg-clip-text text-transparent bg-gradient-to-b from-neutral-50 to-neutral-400 bg-opacity-50 translate-y-full group-hover:translate-y-0 transition-transform ease-in-out duration-500 hover:duration-300 w-full">
+                    <span className="-translate-x-1/2 absolute top-0 left-1/2 w-full translate-y-full bg-gradient-to-b bg-opacity-50 from-neutral-50 to-neutral-400 bg-clip-text text-center font-bold text-2xl text-transparent transition-transform duration-500 ease-in-out hover:duration-300 group-hover:translate-y-0 md:text-3xl">
                         Our team iterated in the development on these apps with students of knowledge.
                     </span>
                 </div>
