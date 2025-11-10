@@ -1,16 +1,28 @@
+import type { Metadata } from 'next';
+
 import { FeaturesSectionDemo } from '@/components/Features';
-import { Footer } from '@/components/Footer';
 import { HeroParallax } from '@/components/HeroParallax';
 import { StatsRow } from '@/components/StatsRow';
 import { TextRevealCard, TextRevealCardDescription, TextRevealCardTitle } from '@/components/TextRevealCard';
 import { socials } from '@/data/socials';
 
-import Navbar from './NavBar';
+const pageTitle = 'The Next Generation Islamic Research Platform';
+const pageDescription = 'Discover IlmTest, a platform dedicated to translating and preserving authentic Islamic knowledge for every Muslim.';
+
+export const metadata: Metadata = {
+    description: pageDescription,
+    openGraph: {
+        description: pageDescription,
+        images: [{ alt: 'IlmTest hero', height: 630, url: '/logo.svg', width: 1200 }],
+        title: pageTitle,
+        url: 'https://ilmtest.io/',
+    },
+    title: pageTitle,
+};
 
 export default function Home() {
     return (
         <>
-            <Navbar />
             <HeroParallax products={socials} />
             <StatsRow />
             <div className="my-12 flex w-full flex-col items-center justify-center">
@@ -35,7 +47,6 @@ export default function Home() {
                     </TextRevealCardDescription>
                 </TextRevealCard>
             </div>
-            <Footer />
         </>
     );
 }

@@ -28,13 +28,13 @@ To translate each and every Islamic text from Arabic to English and have it easi
 
 ## 🛠️ Tech Stack
 
-- **Framework:** Next.js 15.5.5 with Turbopack
+- **Framework:** Next.js 15 (App Router) with typed routes & view transitions enabled for a smooth upgrade path to v16
 - **Runtime:** Bun ≥1.3.0
-- **UI Components:** Radix UI primitives
-- **Styling:** Tailwind CSS 4.1.14
-- **Animations:** Motion (Framer Motion)
+- **UI Components:** Radix UI primitives with optimized package imports
+- **Styling:** Tailwind CSS v4 (PostCSS pipeline)
+- **Animations:** Framer Motion
 - **Icons:** Tabler Icons & Lucide React
-- **Language:** TypeScript 5.9.3
+- **Language:** TypeScript 5.9
 - **Code Quality:** Biome (formatting & linting)
 
 ## 🚀 Getting Started
@@ -53,6 +53,8 @@ cd ilmtest.io
 # Install dependencies
 bun install
 ```
+
+> **Need the bleeding edge?** When network access is available run `bun update` to pull the freshest Next.js 16 canary builds. The repository configuration already enables the recommended feature flags so no code changes are needed after upgrading.
 
 ### Development
 
