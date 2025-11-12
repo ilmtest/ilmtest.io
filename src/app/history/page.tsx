@@ -1,8 +1,8 @@
-import type { Metadata } from 'next';
 import Image from 'next/image';
 import type { ReactNode } from 'react';
 
 import { Timeline } from '@/components/Timeline';
+import { createPageMetadata } from '@/lib/seo';
 
 type TimelineEntry = { content: ReactNode; title: string };
 
@@ -39,7 +39,9 @@ const timelineData: TimelineEntry[] = [
     {
         content: (
             <div>
-                <p className="mb-4 font-normal text-neutral-800 text-xs md:text-sm dark:text-neutral-200">Beta Release</p>
+                <p className="mb-4 font-normal text-neutral-800 text-xs md:text-sm dark:text-neutral-200">
+                    Beta Release
+                </p>
                 <div className="mb-8">
                     <div className="flex items-center gap-2 text-neutral-700 text-xs md:text-sm dark:text-neutral-300">
                         ✅ User Authentication and Permissions
@@ -61,16 +63,7 @@ const pageTitle = 'IlmTest Project History';
 const pageDescription =
     'Trace the milestones that shaped IlmTest—from the first Salat10 release to today’s ambitious research platform.';
 
-export const metadata: Metadata = {
-    description: pageDescription,
-    openGraph: {
-        description: pageDescription,
-        images: [{ alt: 'IlmTest timeline', height: 630, url: '/logo.svg', width: 1200 }],
-        title: pageTitle,
-        url: 'https://ilmtest.io/history',
-    },
-    title: pageTitle,
-};
+export const metadata = createPageMetadata({ description: pageDescription, path: '/history', title: pageTitle });
 
 export default function History() {
     return (
@@ -79,13 +72,13 @@ export default function History() {
                 <div className="mx-auto max-w-7xl px-4 py-20 md:px-8 lg:px-10">
                     <h2 className="mb-4 max-w-4xl text-black text-lg md:text-4xl dark:text-white">Project History</h2>
                     <p className="max-w-7xl text-neutral-700 text-sm md:text-base dark:text-neutral-300">
-                        This app began when a brother in a WhatsApp group some benefits from al-Dhahabi’s Siyar regarding
-                        some of the physical descriptions of the Companions. The benefit was copied and pasted from
-                        somewhere online but it did not have the Arabic. Someone in the group asked: “And who is the
-                        translator?” Meaning how do we know it is accurate, as there were several excerpts from different
-                        parts of Siyar. The brother who posted it did not have any answer. As a result I went and went
-                        through shamela.ws for hours, trying to match each one. This gave birth to the concept behind
-                        ilmtest.
+                        This app began when a brother in a WhatsApp group some benefits from al-Dhahabi’s Siyar
+                        regarding some of the physical descriptions of the Companions. The benefit was copied and pasted
+                        from somewhere online but it did not have the Arabic. Someone in the group asked: “And who is
+                        the translator?” Meaning how do we know it is accurate, as there were several excerpts from
+                        different parts of Siyar. The brother who posted it did not have any answer. As a result I went
+                        and went through shamela.ws for hours, trying to match each one. This gave birth to the concept
+                        behind ilmtest.
                         <br />
                         <br />
                         The underlying technology and architecture behind our platform is the ultimate evolution of a

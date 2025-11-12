@@ -1,9 +1,8 @@
-import type { Metadata } from 'next';
-
 import { HoverEffect } from '@/components/HoverEffect';
 import { HoverImageLink } from '@/components/HoverImageLink';
 import { FloatingPhone } from '@/components/Phone';
 import { SimpleSpotlight } from '@/components/SimpleSpotlight';
+import { createPageMetadata } from '@/lib/seo';
 
 const beliefs = [
     {
@@ -39,18 +38,10 @@ const beliefs = [
 ];
 
 const pageTitle = 'About IlmTest';
-const pageDescription = 'Learn about IlmTest’s mission, creed, and the applications we build to support the global Muslim community.';
+const pageDescription =
+    'Learn about IlmTest’s mission, creed, and the applications we build to support the global Muslim community.';
 
-export const metadata: Metadata = {
-    description: pageDescription,
-    openGraph: {
-        description: pageDescription,
-        images: [{ alt: 'About IlmTest spotlight', height: 630, url: '/logo.svg', width: 1200 }],
-        title: pageTitle,
-        url: 'https://ilmtest.io/about',
-    },
-    title: pageTitle,
-};
+export const metadata = createPageMetadata({ description: pageDescription, path: '/about', title: pageTitle });
 
 export default function About() {
     return (
