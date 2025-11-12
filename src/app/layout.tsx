@@ -1,19 +1,23 @@
-import type { Metadata } from 'next';
+import type { ReactNode } from 'react';
 
+import { Footer } from '@/components/Footer';
+import { rootMetadata } from '@/lib/seo';
+
+import Navbar from './NavBar';
 import './globals.css';
 
-import { Geist, Geist_Mono } from 'next/font/google';
+export const metadata = rootMetadata;
 
-const geistSans = Geist({ subsets: ['latin'], variable: '--font-geist-sans' });
-
-const geistMono = Geist_Mono({ subsets: ['latin'], variable: '--font-geist-mono' });
-
-export const metadata: Metadata = { description: 'Islām In Its Original Form', title: 'IlmTest' };
-
-export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
+export default function RootLayout({ children }: Readonly<{ children: ReactNode }>) {
     return (
         <html lang="en">
-            <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>{children}</body>
+            <body className="antialiased">
+                <Navbar />
+                <main className="flex min-h-screen flex-col" role="main">
+                    {children}
+                </main>
+                <Footer />
+            </body>
         </html>
     );
 }

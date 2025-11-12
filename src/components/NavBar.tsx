@@ -1,8 +1,10 @@
 import { IconArrowDown } from '@tabler/icons-react';
+import clsx from 'clsx';
 import { motion } from 'framer-motion';
+import type { Route } from 'next';
 import Image from 'next/image';
 import Link from 'next/link';
-import type React from 'react';
+import type { ComponentPropsWithoutRef, Dispatch, ReactNode, SetStateAction } from 'react';
 
 const transition = {
     damping: 11.5,
@@ -13,19 +15,21 @@ const transition = {
     type: 'spring',
 } as const;
 
-export const MenuItem = ({
-    active,
-    children,
-    item,
-    setActive,
-}: {
-    active: null | string;
-    children?: React.ReactNode;
-    item: string;
-    setActive: (item: string) => void;
-}) => {
+type ActiveSetter = Dispatch<SetStateAction<string | null>>;
+
+type MenuItemProps = { active: string | null; children?: ReactNode; item: string; setActive: ActiveSetter };
+
+export const MenuItem = ({ active, children, item, setActive }: MenuItemProps) => {
     return (
-        <button type="button" className="relative" onMouseEnter={() => setActive(item)}>
+        <button
+            type="button"
+            aria-expanded={active === item}
+            aria-haspopup={children ? 'menu' : undefined}
+            className="relative"
+            role="menuitem"
+            onFocus={() => setActive(item)}
+            onMouseEnter={() => setActive(item)}
+        >
             <motion.div
                 className="group relative inline-flex h-12 cursor-pointer items-center justify-center overflow-hidden rounded-md bg-neutral-950 px-6 font-medium text-black text-neutral-200 duration-500 hover:opacity-[0.9] dark:text-white"
                 transition={{ duration: 0.3 }}
@@ -63,36 +67,27 @@ export const MenuItem = ({
     );
 };
 
-export const Menu = ({
-    children,
-    setActive,
-}: {
-    children: React.ReactNode;
-    setActive: (item: null | string) => void;
-}) => {
+type MenuProps = { children: ReactNode; setActive: ActiveSetter };
+
+export const Menu = ({ children, setActive }: MenuProps) => {
     return (
         <nav
+            aria-label="Primary navigation"
             className="relative flex justify-center space-x-4 rounded-full border border-transparent bg-white px-8 py-6 shadow-input dark:border-white/[0.2] dark:bg-black/80"
+            role="menubar"
             onMouseLeave={() => setActive(null)} // resets the state
+            onBlur={() => setActive(null)}
         >
             {children}
         </nav>
     );
 };
 
-export const ProductItem = ({
-    description,
-    href,
-    src,
-    title,
-}: {
-    description: string;
-    href: string;
-    src: string;
-    title: string;
-}) => {
+type ProductItemProps = { description: string; href: Route; src: string; title: string };
+
+export const ProductItem = ({ description, href, src, title }: ProductItemProps) => {
     return (
-        <Link className="flex space-x-2" href={href}>
+        <Link className="flex space-x-2" href={href} prefetch={false} role="menuitem">
             <Image alt={title} className="flex-shrink-0 rounded-md shadow-2xl" height={70} src={src} width={140} />
             <div>
                 <h4 className="mb-1 font-bold text-black text-xl dark:text-white">{title}</h4>
@@ -102,11 +97,16 @@ export const ProductItem = ({
     );
 };
 
-export const HoveredLink = ({ children, ...rest }: any) => {
+type HoveredLinkProps = ComponentPropsWithoutRef<typeof Link> & { children: ReactNode };
+
+export const HoveredLink = ({ children, className, ...rest }: HoveredLinkProps) => {
     return (
         <Link
             {...rest}
-            className="group relative inline-flex items-center justify-center overflow-hidden bg-neutral-950 text-neutral-700 hover:text-white dark:text-neutral-200"
+            className={clsx(
+                'group relative inline-flex items-center justify-center overflow-hidden bg-neutral-950 text-neutral-700 hover:text-white dark:text-neutral-200',
+                className,
+            )}
         >
             <span>{children}</span>
             <div className="absolute inset-0 flex h-full w-full justify-center [transform:skew(-12deg)_translateX(-100%)] group-hover:duration-1000 group-hover:[transform:skew(-12deg)_translateX(100%)]">

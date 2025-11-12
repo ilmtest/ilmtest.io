@@ -2,8 +2,7 @@ import { HoverEffect } from '@/components/HoverEffect';
 import { HoverImageLink } from '@/components/HoverImageLink';
 import { FloatingPhone } from '@/components/Phone';
 import { SimpleSpotlight } from '@/components/SimpleSpotlight';
-
-import Navbar from '../NavBar';
+import { createPageMetadata } from '@/lib/seo';
 
 const beliefs = [
     {
@@ -38,10 +37,15 @@ const beliefs = [
     },
 ];
 
+const pageTitle = 'About IlmTest';
+const pageDescription =
+    'Learn about IlmTest’s mission, creed, and the applications we build to support the global Muslim community.';
+
+export const metadata = createPageMetadata({ description: pageDescription, path: '/about', title: pageTitle });
+
 export default function About() {
     return (
         <>
-            <Navbar />
             <div className="relative flex h-[20rem] w-full overflow-hidden rounded-md bg-black/[0.96] bg-grid-white/[0.02] pt-50 antialiased md:items-center md:justify-center">
                 <SimpleSpotlight />
                 <div className="relative z-10 mx-auto w-full max-w-7xl p-4 pt-20 md:pt-0">

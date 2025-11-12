@@ -79,6 +79,7 @@ export const ProductCard = ({
     product: { link: string; thumbnail: string; title: string };
     translate: MotionValue<number>;
 }) => {
+    const href = new URL(product.link);
     return (
         <motion.div
             className="group/product relative h-96 w-[30rem] flex-shrink-0"
@@ -95,7 +96,13 @@ export const ProductCard = ({
             />
             <div className="pointer-events-none absolute inset-0 h-full w-full bg-black opacity-0 group-hover/product:opacity-80"></div>
             <h2 className="absolute bottom-4 left-4 text-white opacity-0 group-hover/product:opacity-100">
-                <Link className="block group-hover/product:shadow-2xl" href={product.link} target="_blank">
+                <Link
+                    className="block group-hover/product:shadow-2xl"
+                    href={href}
+                    prefetch={false}
+                    rel="noreferrer"
+                    target="_blank"
+                >
                     {product.title}
                 </Link>
             </h2>
