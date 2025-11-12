@@ -28,7 +28,7 @@ To translate each and every Islamic text from Arabic to English and have it easi
 
 ## 🛠️ Tech Stack
 
-- **Framework:** Next.js 15.5 with the App Router, typed routes, and View Transitions enabled
+- **Framework:** Next.js 16 with the App Router, typed routes, and View Transitions enabled
 - **Runtime:** Bun ≥1.3.0
 - **UI Components:** Radix UI primitives with optimized package imports
 - **Styling:** Tailwind CSS 4.1 with the PostCSS pipeline
