@@ -1,0 +1,455 @@
+{
+    "content": [
+        {
+            "chapter": 60518,
+            "id": 1,
+            "nass": "بِسْمِ ٱللَّهِ ٱلرَّحْمَٰنِ ٱلرَّحِيمِ",
+            "page": 1,
+            "surah": 1,
+            "text": "In the Name of Allāh, the Most Merciful, the Especially Merciful.",
+            "translator": 13,
+            "verse": 1
+        },
+        {
+            "chapter": 60518,
+            "id": 2,
+            "nass": "ٱلْحَمْدُ لِلَّهِ رَبِّ ٱلْعَٰلَمِينَ",
+            "page": 1,
+            "surah": 1,
+            "text": "All praise is due to Allāh, the Rabb of all creation.",
+            "translator": 13,
+            "verse": 2
+        },
+        {
+            "chapter": 60518,
+            "id": 3,
+            "nass": "ٱلرَّحْمَٰنِ ٱلرَّحِيمِ",
+            "page": 1,
+            "surah": 1,
+            "text": "The Most Merciful, the Especially Merciful.",
+            "translator": 13,
+            "verse": 3
+        },
+        {
+            "chapter": 60518,
+            "id": 4,
+            "nass": "مَٰلِكِ يَوْمِ ٱلدِّينِ",
+            "page": 1,
+            "surah": 1,
+            "text": "The Owner and the Sovereign of the Day of Reckoning.",
+            "translator": 13,
+            "verse": 4
+        },
+        {
+            "chapter": 60518,
+            "flags": "2",
+            "id": 5,
+            "nass": "إِيَّاكَ نَعْبُدُ وَإِيَّاكَ نَسْتَعِينُ",
+            "page": 1,
+            "surah": 1,
+            "text": "You alone we worship and from You alone we seek assistance.",
+            "translator": 13,
+            "verse": 5
+        },
+        {
+            "chapter": 60518,
+            "id": 6,
+            "nass": "ٱهْدِنَا ٱلصِّرَٰطَ ٱلْمُسْتَقِيمَ",
+            "page": 1,
+            "surah": 1,
+            "text": "Guide us to the straight path.",
+            "translator": 13,
+            "verse": 6
+        },
+        {
+            "chapter": 60518,
+            "flags": "4",
+            "id": 7,
+            "nass": "صِرَٰطَ ٱلَّذِينَ أَنْعَمْتَ عَلَيْهِمْ غَيْرِ ٱلْمَغْضُوبِ عَلَيْهِمْ وَلَا ٱلضَّآلِّينَ",
+            "page": 1,
+            "surah": 1,
+            "text": "The path of those upon whom You have bestowed Your favour. Not those who have incurred Your wrath, and not those who have gone astray.\nthe path of those You have favored. not those who have incurred Your wrath, nor those who have gone astray.",
+            "translator": 6,
+            "verse": 7
+        },
+        {
+            "chapter": 60519,
+            "id": 8,
+            "nass": "الٓمٓ",
+            "page": 2,
+            "surah": 2,
+            "text": "Alīf-Lām-Mīm.",
+            "translator": 13,
+            "verse": 1
+        },
+        {
+            "chapter": 60519,
+            "id": 9,
+            "nass": "ذَٰلِكَ ٱلْكِتَٰبُ لَا رَيْبَ ۛ فِيهِ ۛ هُدًى لِّلْمُتَّقِينَ",
+            "page": 2,
+            "surah": 2,
+            "text": "This is the Book about which there is no doubt, a guide to al-muttaqūn [the people who fear and love Allāh much].",
+            "translator": 13,
+            "verse": 2
+        },
+        {
+            "chapter": 60519,
+            "id": 10,
+            "nass": "ٱلَّذِينَ يُؤْمِنُونَ بِٱلْغَيْبِ وَيُقِيمُونَ ٱلصَّلَوٰةَ وَمِمَّا رَزَقْنَٰهُمْ يُنفِقُونَ",
+            "page": 2,
+            "surah": 2,
+            "text": "Who believe in the unseen, perform ṣalāh, and spend out of what we have provided for them,",
+            "translator": 13,
+            "verse": 3
+        },
+        {
+            "chapter": 60519,
+            "id": 11,
+            "nass": "وَٱلَّذِينَ يُؤْمِنُونَ بِمَآ أُنزِلَ إِلَيْكَ وَمَآ أُنزِلَ مِن قَبْلِكَ وَبِٱلْءَاخِرَةِ هُمْ يُوقِنُونَ",
+            "page": 2,
+            "surah": 2,
+            "text": "Those who believe in what has been sent down to you; and in what has been sent down before you, and they have full certainty in the Hereafter.",
+            "translator": 13,
+            "verse": 4
+        },
+        {
+            "chapter": 60519,
+            "id": 12,
+            "nass": "أُو۟لَٰٓئِكَ عَلَىٰ هُدًى مِّن رَّبِّهِمْ ۖ وَأُو۟لَٰٓئِكَ هُمُ ٱلْمُفْلِحُونَ",
+            "page": 2,
+            "surah": 2,
+            "text": "They are upon true guidance from their Lord, and they are the truly successful.",
+            "translator": 13,
+            "verse": 5
+        },
+        {
+            "chapter": 60519,
+            "id": 13,
+            "nass": "إِنَّ ٱلَّذِينَ كَفَرُوا۟ سَوَآءٌ عَلَيْهِمْ ءَأَنذَرْتَهُمْ أَمْ لَمْ تُنذِرْهُمْ لَا يُؤْمِنُونَ",
+            "page": 3,
+            "surah": 2,
+            "text": "Indeed, it makes no difference to those who disbelieve whether you warn them (of Allāh's punishment) or not: they will not believe.",
+            "translator": 13,
+            "verse": 6
+        },
+        {
+            "chapter": 60519,
+            "id": 14,
+            "nass": "خَتَمَ ٱللَّهُ عَلَىٰ قُلُوبِهِمْ وَعَلَىٰ سَمْعِهِمْ ۖ وَعَلَىٰٓ أَبْصَٰرِهِمْ غِشَٰوَةٌ ۖ وَلَهُمْ عَذَابٌ عَظِيمٌ",
+            "page": 3,
+            "surah": 2,
+            "text": "Allāh has sealed their hearts and their hearing and over their eyes is a covering. They will face severe punishment.",
+            "translator": 13,
+            "verse": 7
+        },
+        {
+            "chapter": 60519,
+            "id": 15,
+            "nass": "وَمِنَ ٱلنَّاسِ مَن يَقُولُ ءَامَنَّا بِٱللَّهِ وَبِٱلْيَوْمِ ٱلْءَاخِرِ وَمَا هُم بِمُؤْمِنِينَ",
+            "page": 3,
+            "surah": 2,
+            "text": "From mankind are those who say, “We believe in Allāh and the Last Day, ” when in fact they do not believe.",
+            "translator": 13,
+            "verse": 8
+        },
+        {
+            "chapter": 60519,
+            "id": 16,
+            "nass": "يُخَٰدِعُونَ ٱللَّهَ وَٱلَّذِينَ ءَامَنُوا۟ وَمَا يَخْدَعُونَ إِلَّآ أَنفُسَهُمْ وَمَا يَشْعُرُونَ",
+            "page": 3,
+            "surah": 2,
+            "text": "They think they deceive Allāh and those who believe. However, they do not deceive anyone besides themselves, though they do not realize it.",
+            "translator": 13,
+            "verse": 9
+        },
+        {
+            "chapter": 60519,
+            "id": 17,
+            "nass": "فِى قُلُوبِهِم مَّرَضٌ فَزَادَهُمُ ٱللَّهُ مَرَضًا ۖ وَلَهُمْ عَذَابٌ أَلِيمٌۢ بِمَا كَانُوا۟ يَكْذِبُونَ",
+            "page": 3,
+            "surah": 2,
+            "text": "There is a disease in their hearts and Allāh has increased their disease. An excruciating torment awaits them as a result of their lies.",
+            "translator": 13,
+            "verse": 10
+        },
+        {
+            "chapter": 60519,
+            "id": 18,
+            "nass": "وَإِذَا قِيلَ لَهُمْ لَا تُفْسِدُوا۟ فِى ٱلْأَرْضِ قَالُوٓا۟ إِنَّمَا نَحْنُ مُصْلِحُونَ",
+            "page": 3,
+            "surah": 2,
+            "text": "When they are told, “Do not cause corruption in the land, ” they reply, “We only seek to set things right.”",
+            "translator": 13,
+            "verse": 11
+        },
+        {
+            "chapter": 60519,
+            "id": 19,
+            "nass": "أَلَآ إِنَّهُمْ هُمُ ٱلْمُفْسِدُونَ وَلَٰكِن لَّا يَشْعُرُونَ",
+            "page": 3,
+            "surah": 2,
+            "text": "They are indeed the ones who cause disorder and corruption, but they do not realize it.",
+            "translator": 13,
+            "verse": 12
+        },
+        {
+            "chapter": 60519,
+            "id": 20,
+            "nass": "وَإِذَا قِيلَ لَهُمْ ءَامِنُوا۟ كَمَآ ءَامَنَ ٱلنَّاسُ قَالُوٓا۟ أَنُؤْمِنُ كَمَآ ءَامَنَ ٱلسُّفَهَآءُ ۗ أَلَآ إِنَّهُمْ هُمُ ٱلسُّفَهَآءُ وَلَٰكِن لَّا يَعْلَمُونَ",
+            "page": 3,
+            "surah": 2,
+            "text": "When they are told, “Believe, as the people have believed, ” they reply, “Are we supposed to believe as the fools have believed?” Indeed, they are the fools, but they do not know it.",
+            "translator": 13,
+            "verse": 13
+        },
+        {
+            "chapter": 60519,
+            "id": 21,
+            "nass": "وَإِذَا لَقُوا۟ ٱلَّذِينَ ءَامَنُوا۟ قَالُوٓا۟ ءَامَنَّا وَإِذَا خَلَوْا۟ إِلَىٰ شَيَٰطِينِهِمْ قَالُوٓا۟ إِنَّا مَعَكُمْ إِنَّمَا نَحْنُ مُسْتَهْزِءُونَ",
+            "page": 3,
+            "surah": 2,
+            "text": "When they meet those who believe, they say, “We believe, ” but when they are alone with their shayāṭīn, they say, “We are really with you; we were merely mocking (the people of īmān by our outward show of solitary).”",
+            "translator": 13,
+            "verse": 14
+        },
+        {
+            "chapter": 60629,
+            "id": 6225,
+            "nass": "وَلَمْ يَكُن لَّهُۥ كُفُوًا أَحَدٌۢ",
+            "page": 604,
+            "surah": 112,
+            "text": "No one is comparable to Him.",
+            "translator": 13,
+            "verse": 4
+        },
+        {
+            "chapter": 60630,
+            "id": 6226,
+            "nass": "قُلْ أَعُوذُ بِرَبِّ ٱلْفَلَقِ",
+            "page": 604,
+            "surah": 113,
+            "text": "Say: \"I seek refuge with the Lord of the daybreak,",
+            "translator": 13,
+            "verse": 1
+        },
+        {
+            "chapter": 60630,
+            "id": 6227,
+            "nass": "مِن شَرِّ مَا خَلَقَ",
+            "page": 604,
+            "surah": 113,
+            "text": "Against the evil of what He has created;",
+            "translator": 13,
+            "verse": 2
+        },
+        {
+            "chapter": 60630,
+            "id": 6228,
+            "nass": "وَمِن شَرِّ غَاسِقٍ إِذَا وَقَبَ",
+            "page": 604,
+            "surah": 113,
+            "text": "And the evil of the night when the darkness settles;",
+            "translator": 13,
+            "verse": 3
+        },
+        {
+            "chapter": 60630,
+            "id": 6229,
+            "nass": "وَمِن شَرِّ ٱلنَّفَّٰثَٰتِ فِى ٱلْعُقَدِ",
+            "page": 604,
+            "surah": 113,
+            "text": "And the evil of witches when they blow on knots,",
+            "translator": 13,
+            "verse": 4
+        },
+        {
+            "chapter": 60630,
+            "id": 6230,
+            "nass": "وَمِن شَرِّ حَاسِدٍ إِذَا حَسَدَ",
+            "page": 604,
+            "surah": 113,
+            "text": "And the evil of the envier when he envies.”",
+            "translator": 13,
+            "verse": 5
+        },
+        {
+            "chapter": 60631,
+            "id": 6231,
+            "nass": "قُلْ أَعُوذُ بِرَبِّ ٱلنَّاسِ",
+            "page": 604,
+            "surah": 114,
+            "text": "Say, \"I seek refuge with the Lord of mankind,",
+            "translator": 13,
+            "verse": 1
+        },
+        {
+            "chapter": 60631,
+            "id": 6232,
+            "nass": "مَلِكِ ٱلنَّاسِ",
+            "page": 604,
+            "surah": 114,
+            "text": "The Sovereign of mankind,",
+            "translator": 13,
+            "verse": 2
+        },
+        {
+            "chapter": 60631,
+            "id": 6233,
+            "nass": "إِلَٰهِ ٱلنَّاسِ",
+            "page": 604,
+            "surah": 114,
+            "text": "The God of mankind,",
+            "translator": 13,
+            "verse": 3
+        },
+        {
+            "chapter": 60631,
+            "id": 6234,
+            "nass": "مِن شَرِّ ٱلْوَسْوَاسِ ٱلْخَنَّاسِ",
+            "page": 604,
+            "surah": 114,
+            "text": "Against the evil of the retreating whisper --",
+            "translator": 13,
+            "verse": 4
+        },
+        {
+            "chapter": 60631,
+            "id": 6235,
+            "nass": "ٱلَّذِى يُوَسْوِسُ فِى صُدُورِ ٱلنَّاسِ",
+            "page": 604,
+            "surah": 114,
+            "text": "Who spreads evil and plants doubts in the chests of mankind.",
+            "translator": 3,
+            "verse": 5
+        },
+        {
+            "chapter": 60631,
+            "id": 6236,
+            "nass": "مِنَ ٱلْجِنَّةِ وَٱلنَّاسِ",
+            "page": 604,
+            "surah": 114,
+            "text": "Of jinn and men.\"",
+            "translator": 13,
+            "verse": 6
+        }
+    ],
+    "headings": [
+        {
+            "id": 60518,
+            "nass": "الفاتحة",
+            "num": 1,
+            "page": 1,
+            "roman": "al-Fātiḥah",
+            "text": "The Opening",
+            "translator": 13
+        },
+        {
+            "id": 60519,
+            "nass": "البقرة",
+            "num": 2,
+            "page": 2,
+            "roman": "al-Baqarah",
+            "text": "The Cow",
+            "translator": 13
+        },
+        {
+            "id": 60520,
+            "nass": "آل عمران",
+            "num": 3,
+            "page": 50,
+            "roman": "Āli-ʿImrān",
+            "text": "The Family of ʿImrān",
+            "translator": 13
+        },
+        {
+            "id": 60521,
+            "nass": "النساء",
+            "num": 4,
+            "page": 77,
+            "roman": "al-Nisāʾ",
+            "text": "Women",
+            "translator": 13
+        },
+        {
+            "id": 60522,
+            "nass": "المائدة",
+            "num": 5,
+            "page": 106,
+            "roman": "al-Māʾidah",
+            "text": "The Table",
+            "translator": 13
+        },
+        {
+            "id": 60523,
+            "nass": "الأنعام",
+            "num": 6,
+            "page": 128,
+            "roman": "al-Anʿām",
+            "text": "Livestock",
+            "translator": 13
+        },
+        {
+            "id": 60524,
+            "nass": "الأعراف",
+            "num": 7,
+            "page": 151,
+            "roman": "al-Aʿrāf",
+            "text": "The Heights",
+            "translator": 13
+        },
+        {
+            "id": 60525,
+            "nass": "الأنفال",
+            "num": 8,
+            "page": 177,
+            "roman": "al-Anfāl",
+            "text": "Spoils of War",
+            "translator": 13
+        },
+        {
+            "id": 60526,
+            "nass": "التوبة",
+            "num": 9,
+            "page": 187,
+            "roman": "al-Tawbah",
+            "text": "Repentance",
+            "translator": 13
+        },
+        {
+            "id": 60527,
+            "nass": "يونس",
+            "num": 10,
+            "page": 208,
+            "roman": "Yūnus",
+            "text": "Jonah",
+            "translator": 13
+        },
+        {
+            "id": 60528,
+            "nass": "هود",
+            "num": 11,
+            "page": 221,
+            "roman": "Hūd",
+            "text": "Hūd",
+            "translator": 13
+        },
+        {
+            "id": 60630,
+            "nass": "الفلق",
+            "num": 113,
+            "page": 604,
+            "roman": "al-Falaq",
+            "text": "Daybreak",
+            "translator": 13
+        },
+        {
+            "id": 60631,
+            "nass": "الناس",
+            "num": 114,
+            "page": 604,
+            "roman": "al-Nās",
+            "text": "Mankind",
+            "translator": 13
+        }
+    ]
+}

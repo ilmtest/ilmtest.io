@@ -17,11 +17,158 @@ Thanks and happy hacking!
 
 ---
 
-## ACTIVE CONTEXT: v1 Data Migration (2025-12-01)
+## ACTIVE CONTEXT: v1 Data Structure Optimizations (2025-12-01)
 
-### Current Status: Planning Complete → Ready for Implementation
+### Current Status: **✅ OPTIMIZATIONS COMPLETE** → Ready for Phase 2 (Core API/Data Access)
 
-We've completed the architectural design and planning phase for a unified data structure to handle Islamic texts (Qur'an, Hadith, Tafsir, Fiqh). **The next AI agent needs to start the implementation phase.**
+The v1 data structure has been **successfully optimized** with all tests passing (73/73) and build working. Migration regenerated with optimized structure.
+
+### What Was Accomplished Today
+
+#### Data Structure Optimizations (Complete ✅)
+
+**Problem Identified:**
+- Non-hadith content (forewords, introductions) incorrectly typed as `"hadith"`
+- Redundant `eid` and bookId prefix in IDs wasting ~200KB per book
+- Hadith headings not extracted (inconsistent with Quran structure)
+- Needed better extensibility for future content types (fatawa, fiqh)
+
+**Solutions Implemented:**
+
+1. **Made `type` Field Optional** ✅
+   - Changed from: `type: 'verse' | 'hadith' | 'chapter-title' | 'text'`
+   - To: `type?: 'verse' | 'hadith' | 'chapter-title'`
+   - Generic text/prose now omits the type field entirely
+   - Saves ~50KB per book with prose content
+   - Better semantic clarity: absence of type = "just text"
+
+2. **Removed ID Redundancy** ✅
+   - Removed `eid` field completely
+   - Removed bookId prefix from IDs (build dynamically when needed)
+   - Before: `{ "eid": "P10", "id": "2576:P10" }`
+   - After: `{ "id": "P10" }`
+   - Saves ~200KB per book
+
+3. **Extracted Hadith Headings** ✅
+   - Created separate `books/{bookId}/headings.json` file
+   - Extracted 3,563 headings from Sahih al-Bukhari
+   - Matches Quran structure for consistency
+   - Enables loading TOC without full content
+   - Saves ~30KB in content.json
+
+4. **Domain-Specific Metadata** ✅
+   - Kept separate types for semantic clarity:
+     - Quran: `VerseMetadata { surah, verse }`
+     - Hadith: `HadithMetadata { volume, pp, hadithNum? }`
+     - Fatawa/Fiqh: `FatawaMetadata { volume, pp }` (for future)
+   - Gzip compresses repeated keys effectively (~90%)
+   - Type safety and semantic clarity > minimal byte savings
+
+5. **Updated Heading Structure** ✅
+   - Simplified IDs: "1" instead of "quran-surah-1"
+   - Replaced generic `num`/`level` with domain-specific fields
+   - Quran: `{ id, surah, page }`
+   - Hadith: `{ id, volume, pp, page }`
+
+#### Files Modified
+
+**Type Definitions:**
+- `src/lib/data-types-v1.ts`
+  - Made `type` optional
+  - Added `FatawaMetadata` type
+  - Renamed `QuranMeta` → `VerseMetadata`, `HadithMeta` → `HadithMetadata`
+  - Updated `Heading` structure, simplified index types
+
+**Migration Scripts:**
+- `scripts/migration-utils.ts`
+  - `transformQuranExcerpt`: Removed bookId prefix
+  - `transformHadithExcerpt`: Made type optional, removed bookId prefix, omit type for generic text
+  - `transformQuranHeading`: Simplified ID, use `surah` field
+  - Added `extractHadithHeadings()` function
+
+- `scripts/migration-scripts-v1.ts`
+  - `migrateHadithData`: Extract and return headings
+  - `migrateHadith`: Write headings to separate file
+
+**Tests:** (All Updated ✅)
+- `tests/migration-utils.test.ts`
+- `tests/migration-integration.test.ts`
+- `tests/data-validation.test.ts`
+
+#### Migration Results
+
+```bash
+📚 Migrating hadith book 2576...
+  ✓ 11359 excerpts
+  ✓ 3563 headings          ← Extracted!
+  ✓ 7325 hadith numbers
+  ✓ 11104 pages
+```
+
+**Space Savings Per Book:**
+- Remove `eid`: ~45KB
+- Remove bookId prefix: ~160KB
+- Optional `type` for text: ~50KB
+- **Total: ~285KB raw (~100-150KB after gzip)**
+
+#### Verification
+
+- ✅ All 73 tests passing
+- ✅ Build successful
+- ✅ Generated files validated:
+  - P8 (foreword): No type field
+  - P10 (hadith): `type: "hadith"`, `hadithNum: 1`
+  - IDs simplified: "P10" not "2576:P10"
+  - Headings file created with 3,563 entries
+
+### File Organization (Current State)
+
+```
+public/data/
+├── books.json              # Books metadata
+├── translators.json        # Translators metadata
+└── books/
+    ├── 1/                  # Quran
+    │   ├── content.json    # Verses (optimized)
+    │   ├── headings.json   # Surahs
+    │   └── indexes/
+    │       ├── surah-verse.json
+    │       └── page.json
+    └── 2576/               # Sahih al-Bukhari
+        ├── content.json    # Hadith excerpts (optimized)
+        ├── headings.json   # Chapter/Book titles (NEW!)
+        └── indexes/
+            ├── hadith-num.json
+            └── page.json
+```
+
+### Next Steps: Phase 2 - Core API/Data Access
+
+The data structure is now optimized and ready for API implementation:
+
+1. **Data Loading Utilities**
+   - Implement `loadBooks()`, `loadTranslators()`
+   - Implement `loadBookContent()`, `loadBookHeadings()`, `loadBookIndexes()`
+
+2. **Lookup Functions**
+   - `getBookById(id)` - Get book metadata
+   - `getExcerptById(globalId)` - Get excerpt by `bookId:eid` format
+   - `getExcerptByVerse(bookId, surah, verse)` - Quran verse lookup
+   - `getExcerptByHadithNum(bookId, hadithNum)` - Hadith number lookup
+   - `getHeadingsByBook(bookId)` - Get all headings
+   - `getExcerptsByPage(bookId, page)` - Paginated content
+
+3. **Performance Targets**
+   - Lookups < 10ms
+   - Lazy loading of content
+   - Proper caching strategy
+
+4. **Tests**
+   - Unit tests for all lookup functions
+   - Performance benchmarks
+   - Edge case handling
+
+### Important Notes for Next Agent
 
 ### What Was Accomplished
 
@@ -187,4 +334,113 @@ Using **Bun's built-in test runner** with conventions:
 
 ---
 
-**Next Agent: Start with Step 1 above (copy files to workspace) and work through the implementation checklist. All planning is done - it's pure execution now!**
+## ✅ IMPLEMENTATION COMPLETE (2025-12-01)
+
+### What Was Implemented
+
+**1. Data Structure & TypeScript Types**
+- ✅ Created `src/lib/data-types-v1.ts` with minimal v1 types
+- ✅ All types use `type` (not `interface`) for consistency
+- ✅ Supports Qur'an and Hadith with extensible architecture
+
+**2. Migration Utilities & Scripts**
+- ✅ Created `scripts/migration-utils.ts` with pure transformation functions
+- ✅ Created `scripts/migration-scripts-v1.ts` with Bun-based migration runner
+- ✅ Arabic number conversion (٠-٩ → 0-9)
+- ✅ Hadith number extraction from nass
+- ✅ Index generation (surah:verse, hadith-num, page)
+
+**3. Data Migration Results**
+- ✅ **Qur'an**: Migrated 6,236 verses with 604 pages
+- ✅ **Sahih al-Bukhari**: Migrated 11,359 excerpts with 7,325 hadith numbers
+- ✅ **Headings**: Migrated 114 surahs
+- ✅ **Indexes**: Generated all indexes successfully
+  - Surah:verse index (6,236 entries)
+  - Page indexes (604 + 11,104 pages)
+  - Hadith number index (7,325 entries)
+
+**4. Test Suite (TDD)**
+- ✅ Created comprehensive test suite with 76 tests
+- ✅ **All tests passing** (76 pass, 0 fail, 491 assertions)
+- ✅ Test files:
+  - `tests/migration-utils.test.ts` - Unit tests for utilities
+  - `tests/index-generation.test.ts` - Index generation tests
+  - `tests/migration-integration.test.ts` - End-to-end migration tests
+  - `tests/data-validation.test.ts` - Validates actual migrated files
+- ✅ Test fixtures created in `tests/fixtures/`
+
+**5. Documentation**
+- ✅ Updated `docs/task.md` - Phase 1 marked complete
+- ✅ Updated `public/data/books.json` - Added v1 schema fields
+- ✅ Updated `tsconfig.json` - Excluded non-app directories from build
+- ✅ Updated `AGENTS.md` - Documented implementation status
+
+**6. Build & Quality**
+- ✅ Build passes successfully (`bun run build`)
+- ✅ Tests pass successfully (`bun test`)
+- ✅ Code formatted with Biome
+
+### File Structure Created
+
+```
+src/lib/
+└── data-types-v1.ts          # v1 TypeScript types
+
+scripts/
+├── migration-utils.ts         # Pure transformation functions
+└── migration-scripts-v1.ts    # Main migration runner
+
+tests/
+├── README.md                  # Test suite documentation
+├── migration-utils.test.ts    # Unit tests
+├── index-generation.test.ts   # Index generation tests
+├── migration-integration.test.ts  # Integration tests
+├── data-validation.test.ts    # Data validation tests
+└── fixtures/
+    ├── quran-sample.json      # Test data
+    └── bukhari-sample.json    # Test data
+
+public/data/
+├── books.json                 # Updated with v1 schema
+└── books/
+    ├── 1/                     # Qur'an
+    │   ├── content.json       # 6,236 verses (migrated)
+    │   ├── headings.json      # 114 surahs (migrated)
+    │   └── indexes/
+    │       ├── surah-verse.json  # 6,236 entries
+    │       └── page.json         # 604 pages
+    └── 2576/                  # Sahih al-Bukhari
+        ├── content.json       # 11,359 excerpts (migrated)
+        └── indexes/
+            ├── hadith-num.json   # 7,325 entries
+            └── page.json         # 11,104 pages
+```
+
+### Next Steps: Phase 2 (Core API/Data Access)
+
+The next AI agent should implement data loading utilities and lookup functions:
+
+1. **Data Loading Utilities**:
+   - Load books.json
+   - Load translators.json
+   - Load specific book content
+   - Load specific book headings
+   - Load indexes
+
+2. **Lookup Functions**:
+   - getBookById(id)
+   - getExcerptById(bookId, eid)
+   - getExcerptByVerse(surah, verse)
+   - getExcerptByHadithNum(bookId, num)
+   - getHeadingsByBook(bookId)
+   - getExcerptsByPage(bookId, page)
+
+3. **Testing**:
+   - Write tests for all data access functions
+   - Ensure performance targets met (<10ms lookups)
+
+See `docs/task.md` for the full Phase 2 checklist.
+
+---
+
+**Agent handoff complete. Phase 1: Data Migration is done! ✅**

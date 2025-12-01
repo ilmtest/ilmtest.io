@@ -2,26 +2,26 @@
 
 ## Milestone v1.0: Core Browsing (MVP)
 
-### Phase 1: Data Migration
-- [ ] Set up project structure
-  - [ ] Initialize Bun project (`bun init`)
-  - [ ] Install dependencies (TypeScript, testing framework)
-  - [ ] Configure tsconfig.json
-- [ ] Run migration scripts
-  - [ ] Migrate Qur'an content (6,236 verses)
-  - [ ] Migrate Qur'an headings (114 surahs)
-  - [ ] Migrate Sahih al-Bukhari content (7,563 excerpts)
-  - [ ] Migrate Sahih al-Bukhari headings
-- [ ] Generate indexes
-  - [ ] Qur'an surah:verse index
-  - [ ] Qur'an page index
-  - [ ] Bukhari hadith number index
-  - [ ] Bukhari page index
-- [ ] Validate data integrity
-  - [ ] All verses have valid surah:verse
-  - [ ] All hadith numbers extracted correctly
-  - [ ] All indexes point to valid excerpts
-  - [ ] No broken references
+### Phase 1: Data Migration ✅
+- [x] Set up project structure
+  - [x] Initialize Bun project (`bun init`)
+  - [x] Install dependencies (TypeScript, testing framework)
+  - [x] Configure tsconfig.json
+- [x] Run migration scripts
+  - [x] Migrate Qur'an content (6,236 verses)
+  - [x] Migrate Qur'an headings (114 surahs)
+  - [x] Migrate Sahih al-Bukhari content (11,359 excerpts)
+  - [x] Migrate Sahih al-Bukhari headings
+- [x] Generate indexes
+  - [x] Qur'an surah:verse index (6,236 entries)
+  - [x] Qur'an page index (604 pages)
+  - [x] Bukhari hadith number index (7,325 entries)
+  - [x] Bukhari page index (11,104 pages)
+- [x] Validate data integrity
+  - [x] All verses have valid surah:verse
+  - [x] All hadith numbers extracted correctly
+  - [x] All indexes point to valid excerpts
+  - [x] No broken references
 
 ### Phase 2: Core API/Data Access
 - [ ] Implement data loading utilities
