@@ -5,7 +5,7 @@ import { TextRevealCard, TextRevealCardDescription, TextRevealCardTitle } from '
 import { socials } from '@/data/socials';
 import { createPageMetadata } from '@/lib/seo';
 
-const pageTitle = 'The Next Generation Islamic Research Platform';
+const pageTitle = 'IlmTest';
 const pageDescription =
     'Discover IlmTest, a platform dedicated to translating and preserving authentic Islamic knowledge for every Muslim.';
 

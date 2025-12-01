@@ -13,9 +13,7 @@ export default function RootLayout({ children }: Readonly<{ children: ReactNode 
         <html lang="en">
             <body className="antialiased">
                 <Navbar />
-                <main className="flex min-h-screen flex-col" role="main">
-                    {children}
-                </main>
+                <main className="flex min-h-screen flex-col">{children}</main>
                 <Footer />
             </body>
         </html>

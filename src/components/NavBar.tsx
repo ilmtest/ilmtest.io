@@ -4,7 +4,17 @@ import { motion } from 'framer-motion';
 import type { Route } from 'next';
 import Image from 'next/image';
 import Link from 'next/link';
-import type { ComponentPropsWithoutRef, Dispatch, ReactNode, SetStateAction } from 'react';
+import {
+    type ComponentPropsWithoutRef,
+    createContext,
+    type Dispatch,
+    type ReactNode,
+    type SetStateAction,
+    useContext,
+} from 'react';
+
+// Context to share setActive across menu components
+const MenuContext = createContext<Dispatch<SetStateAction<string | null>> | null>(null);
 
 const transition = {
     damping: 11.5,
@@ -31,7 +41,7 @@ export const MenuItem = ({ active, children, item, setActive }: MenuItemProps) =
             onMouseEnter={() => setActive(item)}
         >
             <motion.div
-                className="group relative inline-flex h-12 cursor-pointer items-center justify-center overflow-hidden rounded-md bg-neutral-950 px-6 font-medium text-black text-neutral-200 duration-500 hover:opacity-[0.9] dark:text-white"
+                className="group relative inline-flex h-12 cursor-pointer items-center justify-center overflow-hidden rounded-md px-6 font-medium text-black text-neutral-200 duration-500 dark:text-white"
                 transition={{ duration: 0.3 }}
             >
                 <div className="group-hover:-translate-y-[150%] translate-y-0 opacity-100 transition group-hover:opacity-0">
@@ -71,15 +81,16 @@ type MenuProps = { children: ReactNode; setActive: ActiveSetter };
 
 export const Menu = ({ children, setActive }: MenuProps) => {
     return (
-        <nav
-            aria-label="Primary navigation"
-            className="relative flex justify-center space-x-4 rounded-full border border-transparent bg-white px-8 py-6 shadow-input dark:border-white/[0.2] dark:bg-black/80"
-            role="menubar"
-            onMouseLeave={() => setActive(null)} // resets the state
-            onBlur={() => setActive(null)}
-        >
-            {children}
-        </nav>
+        <MenuContext.Provider value={setActive}>
+            <nav
+                aria-label="Primary navigation"
+                className="relative flex justify-center space-x-4 rounded-full border border-transparent px-8 py-6 dark:border-white/[0.2]"
+                onMouseLeave={() => setActive(null)} // resets the state
+                onBlur={() => setActive(null)}
+            >
+                {children}
+            </nav>
+        </MenuContext.Provider>
     );
 };
 
@@ -100,13 +111,17 @@ export const ProductItem = ({ description, href, src, title }: ProductItemProps)
 type HoveredLinkProps = ComponentPropsWithoutRef<typeof Link> & { children: ReactNode };
 
 export const HoveredLink = ({ children, className, ...rest }: HoveredLinkProps) => {
+    const setActive = useContext(MenuContext);
+
     return (
         <Link
             {...rest}
             className={clsx(
-                'group relative inline-flex items-center justify-center overflow-hidden bg-neutral-950 text-neutral-700 hover:text-white dark:text-neutral-200',
+                'group relative inline-flex items-center justify-center overflow-hidden text-neutral-700 hover:text-white dark:text-neutral-200',
                 className,
             )}
+            onMouseEnter={() => setActive?.(null)}
+            onFocus={() => setActive?.(null)}
         >
             <span>{children}</span>
             <div className="absolute inset-0 flex h-full w-full justify-center [transform:skew(-12deg)_translateX(-100%)] group-hover:duration-1000 group-hover:[transform:skew(-12deg)_translateX(100%)]">

@@ -43,12 +43,22 @@ export const HeroParallax = ({ products }: { products: { link: string; thumbnail
             <motion.div className="" style={{ opacity, rotateX, rotateZ, translateY }}>
                 <motion.div className="mb-10 flex flex-row-reverse space-x-3 space-x-reverse">
                     {firstRow.map((product) => (
-                        <ProductCard key={product.title} product={product} translate={translateX} />
+                        <ProductCard
+                            key={product.title}
+                            product={product}
+                            scrollYProgress={scrollYProgress}
+                            translate={translateX}
+                        />
                     ))}
                 </motion.div>
                 <motion.div className="mb-10 flex flex-row space-x-3">
                     {secondRow.map((product) => (
-                        <ProductCard key={product.title} product={product} translate={translateXReverse} />
+                        <ProductCard
+                            key={product.title}
+                            product={product}
+                            scrollYProgress={scrollYProgress}
+                            translate={translateXReverse}
+                        />
                     ))}
                 </motion.div>
             </motion.div>
@@ -74,18 +84,31 @@ export const Header = () => {
 
 export const ProductCard = ({
     product,
+    scrollYProgress,
     translate,
 }: {
     product: { link: string; thumbnail: string; title: string };
+    scrollYProgress: MotionValue<number>;
     translate: MotionValue<number>;
 }) => {
     const href = new URL(product.link);
+    const [isClickable, setIsClickable] = React.useState(false);
+
+    React.useEffect(() => {
+        const unsubscribe = scrollYProgress.on('change', (latest) => {
+            // Links become clickable when scroll progress reaches 20% (when tilt disappears)
+            setIsClickable(latest >= 0.2);
+        });
+
+        return () => unsubscribe();
+    }, [scrollYProgress]);
+
     return (
         <motion.div
             className="group/product relative h-96 w-[30rem] flex-shrink-0"
             key={product.title}
             style={{ x: translate }}
-            whileHover={{ y: -20 }}
+            whileHover={isClickable ? { y: -20 } : undefined}
         >
             <Image
                 alt={product.title}
@@ -101,6 +124,10 @@ export const ProductCard = ({
                     href={href}
                     prefetch={false}
                     rel="noreferrer"
+                    style={{
+                        cursor: isClickable ? 'pointer' : 'default',
+                        pointerEvents: isClickable ? 'auto' : 'none',
+                    }}
                     target="_blank"
                 >
                     {product.title}
