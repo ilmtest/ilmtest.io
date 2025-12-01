@@ -22,6 +22,10 @@
   - [x] All hadith numbers extracted correctly
   - [x] All indexes point to valid excerpts
   - [x] No broken references
+- [x] Static Site Optimization
+  - [x] Content chunking (500 items/chunk)
+  - [x] Consolidated global indexes
+  - [x] Optimized headings with ranges
 
 ### Phase 2: Core API/Data Access
 - [ ] Implement data loading utilities
@@ -232,15 +236,15 @@
 
 ## Milestone v5.0: Performance & Scale
 
-### Phase 1: Book Chunking
-- [ ] Chunk large books
-  - [ ] Split Sahih al-Bukhari by volume
-  - [ ] Split other large hadith collections
-  - [ ] Create chunk manifests
-- [ ] Lazy loading
-  - [ ] Load chunks on demand
-  - [ ] Prefetch next chunk
-  - [ ] Cache management
+### Phase 1: Book Chunking (Moved to v1.0 ✅)
+- [x] Chunk large books
+  - [x] Split Sahih al-Bukhari by volume/chunk
+  - [x] Split other large hadith collections
+  - [x] Create chunk manifests (replaced by deterministic chunking)
+- [x] Lazy loading
+  - [ ] Load chunks on demand (Client-side implementation pending)
+  - [ ] Prefetch next chunk (Client-side implementation pending)
+  - [ ] Cache management (Client-side implementation pending)
 
 ### Phase 2: Advanced Optimization
 - [ ] Image optimization

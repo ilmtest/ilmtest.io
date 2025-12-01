@@ -373,12 +373,11 @@ Create separate index files for common lookup patterns. Indexes are small JSON m
   }
 }
 ```
-
 These are separate from main content for efficient partial updates and can be split by surah/book to keep file sizes manageable.
 
 ---
 
-## File Organization Strategy
+## File Organization Strategy (Implemented)
 
 ```
 public/data/
@@ -386,22 +385,23 @@ public/data/
 ├── translators.json                    # ~3 KB
 ├── books/
 │   ├── 1/                              # Qur'an
-│   │   ├── content.json                # ~3.9 MB (full Qur'an)
-│   │   ├── headings.json               # ~20 KB (114 surahs)
-│   │   └── indexes/
-│   │       ├── surah-verse.json        # ~150 KB
-│   │       ├── page.json               # ~15 KB
-│   │       └── juz.json                # ~5 KB
-│   ├── 2576/                           # Sahih al-Bukhari
-│   │   ├── content.json                # ~190 MB (very large!)
-│   │   ├── content-chunked/            # Split for performance
-│   │   │   ├── volume-1.json           # ~20 MB
-│   │   │   ├── volume-2.json
+│   │   ├── content/                    # Content chunks (500 verses each)
+│   │   │   ├── 0.json                  # Verses 1-500
 │   │   │   └── ...
-│   │   ├── headings.json               # ~100 KB
-│   │   └── indexes/
-│   │       ├── hadith-num.json         # ~180 KB
-│   │       └── page.json               # ~250 KB
+│   │   ├── headings.json               # Surahs (with precomputed ranges)
+│   │   └── indexes.json                # Consolidated index (~150 KB)
+│   │       ├── surahs                  # Surah:Verse -> Global Index
+│   │       ├── pages                   # Page -> Index Range
+│   │       └── ids                     # ID -> Global Index
+│   ├── 2576/                           # Sahih al-Bukhari
+│   │   ├── content/                    # Content chunks (500 hadiths each)
+│   │   │   ├── 0.json                  # Hadiths 1-500
+│   │   │   └── ...
+│   │   ├── headings.json               # Chapter titles (with ranges)
+│   │   └── indexes.json                # Consolidated index (~1 MB)
+│   │       ├── hadiths                 # Hadith Num -> Global Index
+│   │       ├── pages                   # Page -> Index Range
+│   │       └── ids                     # ID -> Global Index
 │   └── 3001/                           # Tafsir al-Tabari
 │       └── ...
 └── cross-refs/
@@ -410,23 +410,21 @@ public/data/
     └── narrator-profiles.json          # ~150 KB
 ```
 
-### Chunking Strategy for Large Books
+### Chunking Strategy (Implemented)
 
-For books >10MB, split into volumes/parts:
+Content is split into fixed-size chunks (default: 500 items) to ensure optimal caching and fast initial loads.
 
 ```json
-// /public/data/books/2576/manifest.json
+// /public/data/books/1/content/0.json
 {
-  "chunked": true,
-  "chunkBy": "volume",
-  "chunks": [
-    { "id": 1, "file": "content-chunked/volume-1.json", "pages": [1, 1500] },
-    { "id": 2, "file": "content-chunked/volume-2.json", "pages": [1501, 3000] }
-  ]
+  "content": [ ... 500 items ... ]
 }
 ```
 
-Application logic fetches only the needed chunk based on page/hadith lookup.
+The client calculates which chunk to fetch based on the global index:
+`chunkId = floor(globalIndex / chunkSize)`
+
+This deterministic strategy avoids the need for a separate manifest file.
 
 ---
 

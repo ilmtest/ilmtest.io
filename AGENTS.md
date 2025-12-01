@@ -404,16 +404,17 @@ public/data/
 ├── books.json                 # Updated with v1 schema
 └── books/
     ├── 1/                     # Qur'an
-    │   ├── content.json       # 6,236 verses (migrated)
-    │   ├── headings.json      # 114 surahs (migrated)
-    │   └── indexes/
-    │       ├── surah-verse.json  # 6,236 entries
-    │       └── page.json         # 604 pages
+    │   ├── content/           # Content chunks
+    │   │   ├── 0.json         # Verses 1-500
+    │   │   └── ...
+    │   ├── headings.json      # 114 surahs (with ranges)
+    │   └── indexes.json       # Consolidated index (surah, page, id)
     └── 2576/                  # Sahih al-Bukhari
-        ├── content.json       # 11,359 excerpts (migrated)
-        └── indexes/
-            ├── hadith-num.json   # 7,325 entries
-            └── page.json         # 11,104 pages
+        ├── content/           # Content chunks
+        │   ├── 0.json         # Hadiths 1-500
+        │   └── ...
+        ├── headings.json      # Chapter titles (with ranges)
+        └── indexes.json       # Consolidated index (hadith, page, id)
 ```
 
 ### Next Steps: Phase 2 (Core API/Data Access)
