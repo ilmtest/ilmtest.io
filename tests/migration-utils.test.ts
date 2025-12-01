@@ -7,8 +7,10 @@
 import { describe, expect, it } from 'bun:test';
 import {
     arabicToWestern,
+    extractHadithHeadings,
     extractHadithNumber,
     type OldHadithExcerpt,
+    type OldHadithHeading,
     type OldQuranExcerpt,
     type OldQuranHeading,
     transformHadithExcerpt,
@@ -230,5 +232,59 @@ describe('transformQuranHeading', () => {
 
         expect(transformed.translator).toBe(13);
         expect(transformed.page).toBe(604);
+    });
+});
+
+describe('extractHadithHeadings', () => {
+    it('should fallback to page-based matching if text does not match', () => {
+        const headings: OldHadithHeading[] = [
+            { id: 'T1', nass: 'عنوان مفقود', page: 5, text: 'Missing', translator: 1 },
+        ];
+
+        const content: OldHadithExcerpt[] = [
+            { id: 'H1', nass: 'حديث', page: 5, text: 'H1', translator: 1 },
+            { id: 'H2', nass: 'حديث آخر', page: 5, text: 'H2', translator: 1 },
+        ];
+        const result = extractHadithHeadings(headings, content);
+
+        expect(result).toHaveLength(1);
+        expect(result[0].id).toBe('T1');
+        expect(result[0].range?.start).toBe('H1');
+        expect(result[0].range?.end).toBe('H2');
+    });
+
+    it('should extract hadith headings with parent mapping and ranges', () => {
+        const headings: OldHadithHeading[] = [
+            { id: 'T5', nass: 'كتاب', page: 1, text: 'Book', translator: 1 },
+            { id: 'T6', nass: 'باب', page: 1, parent: 5, text: 'Chapter', translator: 1 },
+        ];
+
+        const content: OldHadithExcerpt[] = [
+            { id: 'B1', nass: 'كتاب', page: 1, text: 'Book', translator: 1, type: 1 }, // Index 0
+            { id: 'H1', nass: 'حديث', page: 1, text: 'H1', translator: 1 }, // Index 1
+            { id: 'C1', nass: 'باب', page: 1, text: 'Chapter', translator: 1, type: 2 }, // Index 2
+            { id: 'H2', nass: 'حديث', page: 1, text: 'H2', translator: 1 }, // Index 3
+            { id: 'H3', nass: 'حديث', page: 1, text: 'H3', translator: 1 }, // Index 4
+        ];
+
+        const result = extractHadithHeadings(headings, content);
+
+        expect(result).toHaveLength(2);
+
+        // Book T5 (matches B1)
+        expect(result[0].id).toBe('T5');
+        expect(result[0].parent).toBeUndefined();
+        expect(result[0].range).toBeDefined();
+        expect(result[0].range?.start).toBe('B1');
+        expect(result[0].range?.end).toBe('H3'); // Should cover everything until end or next Book
+
+        // Chapter T6 (matches C1)
+        // Note: With simple page-based logic, if T6 is on Page 1, it will start at the first item of Page 1 (B1)
+        // unless we have more granular logic. The user requested simple page-based logic.
+        expect(result[1].id).toBe('T6');
+        expect(result[1].parent).toBe('T5');
+        expect(result[1].range).toBeDefined();
+        expect(result[1].range?.start).toBe('B1'); // Starts at beginning of page
+        expect(result[1].range?.end).toBe('H3'); // Should cover until end
     });
 });

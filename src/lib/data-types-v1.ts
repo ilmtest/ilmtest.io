@@ -82,9 +82,56 @@ export type Heading = {
     volume?: number;
     pp?: number;
     page?: number;
+    parent?: string; // ID of parent heading (e.g., "T5")
+    /**
+     * The range of content IDs covered by this heading (inclusive).
+     * Used for logical grouping and reverse lookup.
+     */
+    range?: { start: string; end: string };
+    /**
+     * The range of array indices in the content array (inclusive).
+     * OPTIMIZATION: Allows O(1) slicing of content without ID lookup.
+     */
+    indexRange?: { start: number; end: number };
+    /**
+     * The range of pages covered by this heading (inclusive).
+     * Useful for displaying page spans in the UI without loading content.
+     */
+    pageRange?: { start: number; end: number };
 };
 
 export type HeadingsManifest = { headings: Heading[] };
+
+export type GlobalIndex = {
+    /**
+     * Map of Hadith Number to Global Index
+     * Example: "1" -> 105
+     */
+    hadiths: Record<string, number>;
+    /**
+     * Map of Page Number to Global Index Range
+     * Example: "10" -> { start: 105, end: 110 }
+     */
+    pages: Record<string, { start: number; end: number }>;
+    /**
+     * Map of Surah:Verse to Global Index (for Qur'an)
+     * Example: "2:255" -> 300
+     */
+    surahs?: Record<string, number>;
+    /**
+     * Map of Content ID to Global Index
+     * Example: "P1334" -> 500
+     */
+    ids: Record<string, number>;
+    /**
+     * The number of items per chunk
+     */
+    chunkSize: number;
+    /**
+     * Total number of items in the content array
+     */
+    totalItems: number;
+};
 
 // ============================================================================
 // Indexes for Fast Lookups

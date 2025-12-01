@@ -418,29 +418,71 @@ public/data/
 
 ### Next Steps: Phase 2 (Core API/Data Access)
 
-The next AI agent should implement data loading utilities and lookup functions:
-
-1. **Data Loading Utilities**:
-   - Load books.json
-   - Load translators.json
-   - Load specific book content
-   - Load specific book headings
-   - Load indexes
-
-2. **Lookup Functions**:
-   - getBookById(id)
-   - getExcerptById(bookId, eid)
-   - getExcerptByVerse(surah, verse)
-   - getExcerptByHadithNum(bookId, num)
-   - getHeadingsByBook(bookId)
-   - getExcerptsByPage(bookId, page)
-
-3. **Testing**:
-   - Write tests for all data access functions
-   - Ensure performance targets met (<10ms lookups)
-
-See `docs/task.md` for the full Phase 2 checklist.
+**Status: DEFERRED / BLOCKED**
+*Reason: Data structure was further optimized for static deployment (chunking + consolidated indexing) before API implementation could begin.*
 
 ---
 
-**Agent handoff complete. Phase 1: Data Migration is done! ✅**
+## Session Update: Static Site Optimization (2025-12-01)
+
+### What Was Accomplished
+We optimized the data structure to ensure maximum performance on Cloudflare's free tier (static hosting), focusing on minimal initial payload and O(1) lookups.
+
+#### 1. Content Chunking ✅
+*   **Problem**: Monolithic `content.json` files were too large (~16MB for Bukhari, ~4MB for Qur'an), causing slow initial loads and inefficient caching.
+*   **Solution**: Split content into fixed-size chunks (500 items per file).
+*   **Implementation**:
+    *   `public/data/books/{id}/content/{chunkId}.json`
+    *   Bukhari: 23 chunks
+    *   Qur'an: 13 chunks
+
+#### 2. Consolidated Global Index ✅
+*   **Problem**: Multiple small index files (`indexes/page.json`, `indexes/hadith-num.json`) required multiple fetches.
+*   **Solution**: Created a single `indexes.json` (~1MB) per book containing all lookup maps.
+*   **Structure**:
+    ```typescript
+    interface GlobalIndex {
+      hadiths: Record<string, number>; // Hadith Num -> Global Index
+      surahs?: Record<string, number>; // Surah:Verse -> Global Index
+      ids: Record<string, number>;     // Content ID -> Global Index
+      pages: Record<string, { start: number; end: number }>; // Page -> Index Range
+      chunkSize: number; // e.g., 500
+      totalItems: number;
+    }
+    ```
+
+#### 3. Optimized Headings ✅
+*   **Problem**: Client needed to know which chunks to fetch for a given chapter.
+*   **Solution**: Added precomputed ranges to `headings.json`.
+*   **New Fields**:
+    *   `indexRange`: `{ start: 0, end: 499 }` (Global array indices)
+    *   `pageRange`: `{ start: 1, end: 10 }` (Page numbers)
+    *   `range`: `{ start: "1:1", end: "1:7" }` (Content IDs)
+
+#### 4. Legacy Cleanup ✅
+*   Updated migration scripts to automatically remove obsolete `content.json` and `indexes/` folders.
+
+### Next Steps: Phase 2 - Core API/Data Access (TDD Approach)
+
+The data structure is now FINALIZED. The next agent should proceed with implementing the client-side data access layer using Test-Driven Development (TDD).
+
+#### 1. Setup Test Fixtures
+*   Create mock `indexes.json` and content chunks in `tests/fixtures`.
+*   Ensure fixtures represent the new chunked structure.
+
+#### 2. Implement Data Access Layer (TDD)
+*   **Goal**: Abstract away the chunking logic from the UI.
+*   **Key Functions to Implement**:
+    *   `getBookMetadata(id)`
+    *   `getChapterList(bookId)`
+    *   `getContentItem(bookId, itemId)` -> Resolves chunk ID -> Fetches chunk -> Returns item.
+    *   `getHadithByNumber(bookId, number)` -> Uses `indexes.json` -> Fetches chunk.
+    *   `getVersesBySurah(bookId, surahNum)` -> Uses `headings.json` ranges -> Fetches relevant chunks.
+    *   `getPageContent(bookId, pageNum)` -> Uses `indexes.json` -> Fetches relevant chunks.
+
+#### 3. Performance Requirements
+*   **Lazy Loading**: Only fetch chunks when needed.
+*   **Caching**: Cache loaded chunks in memory (LRU cache recommended).
+*   **Prefetching**: Prefetch next chunk when user is near the end of current chunk.
+
+**Agent handoff complete. Data Structure is fully optimized for static deployment! 🚀**

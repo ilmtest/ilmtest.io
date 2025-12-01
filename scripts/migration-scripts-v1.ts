@@ -7,13 +7,16 @@
  * Run with: bun run migrate-v1.ts
  */
 
+import { mkdir, rmdir, unlink } from 'node:fs/promises';
 import { join } from 'node:path';
 import {
     extractHadithHeadings,
+    generateGlobalIndex,
     generateHadithNumIndex,
     generatePageIndex,
     generateSurahVerseIndex,
     type OldHadithExcerpt,
+    type OldHadithHeading,
     type OldQuranExcerpt,
     type OldQuranHeading,
     transformHadithContent,
@@ -27,7 +30,7 @@ import {
 
 export function migrateQuranData(oldData: { content: OldQuranExcerpt[]; headings: OldQuranHeading[] }) {
     const newContent = transformQuranContent(oldData.content);
-    const newHeadings = transformQuranHeadings(oldData.headings);
+    const newHeadings = transformQuranHeadings(oldData.headings, newContent);
 
     const surahVerseIndex = generateSurahVerseIndex(
         oldData.content.map((e) => ({ id: e.id, page: e.page, surah: e.surah, verse: e.verse })),
@@ -38,9 +41,12 @@ export function migrateQuranData(oldData: { content: OldQuranExcerpt[]; headings
     return { content: newContent, headings: newHeadings, indexes: { page: pageIndex, surahVerse: surahVerseIndex } };
 }
 
-export function migrateHadithData(oldData: { content: OldHadithExcerpt[] }, bookId: number) {
+export function migrateHadithData(
+    oldData: { content: OldHadithExcerpt[]; headings: OldHadithHeading[] },
+    bookId: number,
+) {
     const newContent = transformHadithContent(oldData.content, bookId);
-    const newHeadings = extractHadithHeadings(oldData.content);
+    const newHeadings = extractHadithHeadings(oldData.headings, oldData.content);
 
     const hadithNumIndex = generateHadithNumIndex(
         oldData.content.map((e) => ({
@@ -92,43 +98,101 @@ export async function migrateQuran(inputPath: string, outputDir: string) {
     const oldData = await loadOldQuranData(inputPath);
     const migrated = migrateQuranData(oldData);
 
-    // Write content
-    await writeContentFile(join(outputDir, 'content.json'), migrated.content);
+    // 4. Generate Global Index
+    const CHUNK_SIZE = 500;
+    const globalIndex = generateGlobalIndex(migrated.content, CHUNK_SIZE);
 
-    // Write headings
+    // 5. Write Data
+    // Write Headings
     await writeHeadingsFile(join(outputDir, 'headings.json'), migrated.headings);
 
-    // Write indexes
-    await writeIndexFile(join(outputDir, 'indexes', 'surah-verse.json'), migrated.indexes.surahVerse);
+    // Write Consolidated Index
+    await writeIndexFile(join(outputDir, 'indexes.json'), globalIndex);
 
-    await writeIndexFile(join(outputDir, 'indexes', 'page.json'), migrated.indexes.page);
+    // Write Content Chunks
+    const contentDir = join(outputDir, 'content');
+    await mkdir(contentDir, { recursive: true });
+
+    // Calculate number of chunks
+    const numChunks = Math.ceil(migrated.content.length / CHUNK_SIZE);
+
+    for (let i = 0; i < numChunks; i++) {
+        const start = i * CHUNK_SIZE;
+        const end = start + CHUNK_SIZE;
+        const chunk = migrated.content.slice(start, end);
+
+        await writeContentFile(join(contentDir, `${i}.json`), chunk);
+    }
+
+    // Cleanup: Remove old monolithic files and folders
+    await unlink(join(outputDir, 'content.json')).catch(() => {});
+    await rmdir(join(outputDir, 'indexes'), { recursive: true }).catch(() => {});
 
     console.log(`  ✓ ${migrated.content.length} verses`);
-    console.log(`  ✓ ${Object.keys(migrated.indexes.surahVerse).length} surah:verse entries`);
-    console.log(`  ✓ ${Object.keys(migrated.indexes.page).length} pages\n`);
+    console.log(`  ✓ ${migrated.headings.length} surahs`);
+    console.log(`  ✓ ${Object.keys(globalIndex.surahs || {}).length} surah:verse entries`);
+    console.log(`  ✓ ${Object.keys(globalIndex.pages).length} pages`);
+    console.log(`  ✓ ${numChunks} content chunks generated\n`);
 }
+
+import { downloadOldData } from './download-old-data';
+
+// ... (imports)
 
 export async function migrateHadith(inputPath: string, outputDir: string, bookId: number) {
     console.log(`📚 Migrating hadith book ${bookId}...`);
 
-    const oldData = await loadOldHadithData(inputPath);
+    let dataPath = inputPath;
+    const file = Bun.file(inputPath);
+
+    if (!(await file.exists())) {
+        console.log(`   File not found locally: ${inputPath}`);
+        try {
+            dataPath = await downloadOldData(bookId, outputDir);
+        } catch (e) {
+            console.warn(`   ⚠️ Could not download data for book ${bookId}. Skipping.`);
+            return;
+        }
+    }
+
+    const oldData = await loadOldHadithData(dataPath);
     const migrated = migrateHadithData(oldData, bookId);
 
-    // Write content
-    await writeContentFile(join(outputDir, 'content.json'), migrated.content);
+    // 4. Generate Global Index
+    const CHUNK_SIZE = 500;
+    const globalIndex = generateGlobalIndex(migrated.content, CHUNK_SIZE);
 
-    // Write headings
-    await writeHeadingsFile(join(outputDir, 'headings.json'), migrated.headings);
+    // 5. Write Data
+    // Write Headings
+    await Bun.write(join(outputDir, 'headings.json'), JSON.stringify({ headings: migrated.headings }, null, 2));
 
-    // Write indexes
-    await writeIndexFile(join(outputDir, 'indexes', 'hadith-num.json'), migrated.indexes.hadithNum);
+    // Write Consolidated Index
+    await Bun.write(join(outputDir, 'indexes.json'), JSON.stringify(globalIndex, null, 2));
 
-    await writeIndexFile(join(outputDir, 'indexes', 'page.json'), migrated.indexes.page);
+    // Write Content Chunks
+    const contentDir = join(outputDir, 'content');
+    await mkdir(contentDir, { recursive: true });
+
+    // Calculate number of chunks
+    const numChunks = Math.ceil(migrated.content.length / CHUNK_SIZE);
+
+    for (let i = 0; i < numChunks; i++) {
+        const start = i * CHUNK_SIZE;
+        const end = start + CHUNK_SIZE;
+        const chunk = migrated.content.slice(start, end);
+
+        await Bun.write(join(contentDir, `${i}.json`), JSON.stringify({ content: chunk }, null, 2));
+    }
+
+    // Cleanup: Remove old monolithic files and folders
+    await unlink(join(outputDir, 'content.json')).catch(() => {});
+    await rmdir(join(outputDir, 'indexes'), { recursive: true }).catch(() => {});
 
     console.log(`  ✓ ${migrated.content.length} excerpts`);
     console.log(`  ✓ ${migrated.headings.length} headings`);
-    console.log(`  ✓ ${Object.keys(migrated.indexes.hadithNum).length} hadith numbers`);
-    console.log(`  ✓ ${Object.keys(migrated.indexes.page).length} pages\n`);
+    console.log(`  ✓ ${Object.keys(globalIndex.hadiths).length} hadith numbers`);
+    console.log(`  ✓ ${Object.keys(globalIndex.pages).length} pages`);
+    console.log(`  ✓ ${numChunks} content chunks generated\n`);
 }
 
 // ============================================================================
