@@ -16,9 +16,11 @@ export async function downloadOldData(bookId: number, outputDir: string): Promis
     }
 
     const url = `https://huggingface.co/datasets/${template.replace('{{bookId}}', bookId.toString())}`;
+    console.log('url', url);
     const isZip = url.endsWith('.zip');
     const filename = isZip ? 'content.zip' : 'content-old.json';
     const downloadPath = join(outputDir, filename);
+    console.log('downloadPath', downloadPath, 'token', token);
 
     console.log(`⬇️  Downloading data for book ${bookId}...`);
     // console.log(`   URL: ${url}`); // Don't log full URL if it contains private info, but here it's constructed

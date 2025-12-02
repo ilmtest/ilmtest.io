@@ -10,6 +10,13 @@
 import { mkdir, rmdir, unlink } from 'node:fs/promises';
 import { join } from 'node:path';
 import {
+    CommonCollectionIds,
+    doApiGet,
+    getEntries,
+    init,
+    type Translator as LegacyTranslator,
+} from '@ilmtest/ilmtest-sdk-js';
+import {
     extractHadithHeadings,
     generateGlobalIndex,
     generateHadithNumIndex,
@@ -135,6 +142,7 @@ export async function migrateQuran(inputPath: string, outputDir: string) {
     console.log(`  ✓ ${numChunks} content chunks generated\n`);
 }
 
+import type { Excerpt, Heading, Translator } from '../src/lib/data-types-v1';
 import { downloadOldData } from './download-old-data';
 
 // ... (imports)
@@ -206,7 +214,7 @@ async function migrate() {
     const dataDir = './public/data';
 
     // Qur'an
-    await migrateQuran(join(dataDir, 'books/1/content-old.json'), join(dataDir, 'books/1'));
+    //await migrateQuran(join(dataDir, 'books/1/content-old.json'), join(dataDir, 'books/1'));
 
     // Sahih al-Bukhari
     await migrateHadith(join(dataDir, 'books/2576/content-old.json'), join(dataDir, 'books/2576'), 2576);
@@ -215,7 +223,43 @@ async function migrate() {
     console.log('✅ Migration complete!\n');
 }
 
+const downloadQuran = async () => {
+    init('3', process.env.ILMTEST_API_URL!);
+
+    const entries = await getEntries({ collection: Number(CommonCollectionIds.Quran), limit: -1 });
+    console.log('entries', entries);
+    const ayats: Excerpt[] = entries
+        .filter((e) => !e.type)
+        .map((e) => ({
+            id: e.id.toString(),
+            meta: { surah: e.part_number!, verse: e.part_page! },
+            nass: e.ar_body!,
+            page: e.from_page!,
+            text: e.body,
+            translator: e.translator!,
+            type: 'verse',
+        }));
+
+    const headings: OldQuranHeading[] = entries
+        .filter((e) => e.type)
+        .map((e) => ({
+            id: e.id,
+            nass: e.ar_body!,
+            num: e.index_number!,
+            page: e.from_page!,
+            text: e.body!,
+            translator: e.translator!,
+        }));
+
+    const translators: Translator[] = (await doApiGet<LegacyTranslator[]>('translators', { limit: -1 })).map((t) => ({
+        id: t.id,
+        name: t.name,
+        ...(t.instagram && { img: t.instagram }),
+    }));
+};
+
 // Run if executed directly
 if (import.meta.main) {
     await migrate();
+    //await downloadQuran();
 }

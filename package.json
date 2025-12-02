@@ -21,6 +21,7 @@
     },
     "devDependencies": {
         "@biomejs/biome": "2.3.8",
+        "@ilmtest/ilmtest-sdk-js": "^5.0.0",
         "@semantic-release/changelog": "6.0.3",
         "@semantic-release/git": "10.0.1",
         "@tailwindcss/postcss": "4.1.17",
@@ -50,6 +51,7 @@
         "dev": "next dev --turbopack",
         "format": "biome format --write",
         "lint": "biome check",
+        "migrate": "bun run scripts/migration-scripts-v1.ts",
         "start": "next start"
     },
     "type": "module",

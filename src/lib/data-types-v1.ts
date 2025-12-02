@@ -9,10 +9,6 @@
 // v1 Core Types
 // ============================================================================
 
-export type BookType = 'scripture' | 'hadith';
-
-export type ExcerptType = 'verse' | 'hadith' | 'chapter-title';
-
 // ============================================================================
 // Books Metadata
 // ============================================================================
@@ -20,10 +16,10 @@ export type ExcerptType = 'verse' | 'hadith' | 'chapter-title';
 export type Book = {
     id: number;
     slug: string;
-    type: BookType;
+    type: 'scripture' | 'hadith';
     title: string;
     unwan: string; // Arabic title
-    author: string | null;
+    author?: string; // books like the Qur'an have no authors
     refTemplate: string; // URL template for external source (asl)
 };
 
@@ -46,24 +42,24 @@ export type TranslatorsManifest = { translators: Translator[] };
  */
 export type Excerpt = {
     id: string; // Unique within book (e.g., "1:1", "P42", "C17")
-    type?: 'verse' | 'hadith' | 'chapter-title'; // Optional: omit for generic text/prose
+    type?: 'verse' | 'hadith' | 'chapter-title'; // Optional: omit for generic text/prose, foreword
     nass: string; // Arabic text
     text: string; // English translation
     translator: number; // Translator ID
     page: number; // Page number in source
-    meta: VerseMetadata | HadithMetadata | FatawaMetadata; // Type-specific metadata
+    meta: VerseMetadata | HadithMetadata; // Type-specific metadata
+};
+
+type CitationMetadata = {
+    volume: number;
+    pp: number; // Part page (for citation like "9/5")
 };
 
 export type VerseMetadata = { surah: number; verse: number };
 
-export type HadithMetadata = {
-    volume: number;
-    pp: number; // Part page (for citation like "9/5")
+export type HadithMetadata = CitationMetadata & {
     hadithNum?: number; // Extracted from nass (e.g., 1, 49, 7563)
 };
-
-// Fatawa/Fiqh books (future v2+)
-export type FatawaMetadata = { volume: number; pp: number };
 
 export type ContentManifest = { content: Excerpt[] };
 

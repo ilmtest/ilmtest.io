@@ -22,6 +22,7 @@
       },
       "devDependencies": {
         "@biomejs/biome": "latest",
+        "@ilmtest/ilmtest-sdk-js": "latest",
         "@semantic-release/changelog": "latest",
         "@semantic-release/git": "latest",
         "@tailwindcss/postcss": "latest",
@@ -82,6 +83,8 @@
     "@floating-ui/react-dom": ["@floating-ui/react-dom@2.1.6", "", { "dependencies": { "@floating-ui/dom": "^1.7.4" }, "peerDependencies": { "react": ">=16.8.0", "react-dom": ">=16.8.0" } }, "sha512-4JX6rEatQEvlmgU80wZyq9RT96HZJa88q8hp0pBd+LrczeDI4o6uA2M+uvxngVHo4Ihr8uibXxH6+70zhAFrVw=="],
 
     "@floating-ui/utils": ["@floating-ui/utils@0.2.10", "", {}, "sha512-aGTxbpbg8/b5JfU1HXSrbH3wXZuLPJcNEcZQFMxLs3oSzgtVu6nFPkbbGGUvBcUjKV2YyB9Wxxabo+HEH9tcRQ=="],
+
+    "@ilmtest/ilmtest-sdk-js": ["@ilmtest/ilmtest-sdk-js@5.0.0", "", {}, "sha512-1J9nT1QU3iCqC8y6DTG1SDgVXv8aJLWvWB8unp2qp4rtIyCcrEKu42VOToLsuZ1moN9JW32LZLKz75jMR1Dpng=="],
 
     "@img/colour": ["@img/colour@1.0.0", "", {}, "sha512-A5P/LfWGFSl6nsckYtjw9da+19jB8hkJ6ACTGcDfEJ0aE+l2n2El7dsVM7UVHZQ9s2lmYMWlrS21YLy2IR1LUw=="],
 

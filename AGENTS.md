@@ -463,27 +463,31 @@ We optimized the data structure to ensure maximum performance on Cloudflare's fr
 #### 4. Legacy Cleanup ✅
 *   Updated migration scripts to automatically remove obsolete `content.json` and `indexes/` folders.
 
-### Next Steps: Phase 2 - Core API/Data Access (TDD Approach)
+### Next Steps: Phase 2 - Core API/Data Access (Refinement Phase)
 
-The data structure is now FINALIZED. The next agent should proceed with implementing the client-side data access layer using Test-Driven Development (TDD).
+**Status: READY FOR REFINEMENT**
+*Reason: Architecture reviews identified critical optimizations needed before full API implementation.*
 
-#### 1. Setup Test Fixtures
-*   Create mock `indexes.json` and content chunks in `tests/fixtures`.
-*   Ensure fixtures represent the new chunked structure.
+#### 1. Refactor Data Types (Immediate Priority)
+*   **Goal**: Strict type safety for `Excerpt` and `Heading`.
+*   **Tasks**:
+    *   Implement discriminated unions for `Excerpt` (e.g., `VerseExcerpt`, `HadithExcerpt`).
+    *   Create strict `Heading` types (`QuranHeading`, `HadithHeading`).
+    *   Remove unused types (`TranslatorsManifest`, etc.).
 
-#### 2. Implement Data Access Layer (TDD)
+#### 2. Update Migration Scripts
+*   **Goal**: Generate optimized data structures for client performance.
+*   **Tasks**:
+    *   **Fix Logic**: Ensure `type` is omitted for generic text.
+    *   **TOC**: Generate `toc.json` (lightweight headings list) to avoid loading 150KB `headings.json`.
+    *   **Index Optimization**: Remove `ids` map from `indexes.json` (move to `indexes/ids.json` if needed).
+    *   **Versioning**: Add `version` field to `GlobalIndex`.
+    *   **Robustness**: Update `download-old-data.ts` to handle zip extraction and dynamic directory creation.
+
+#### 3. Implement Data Access Layer (TDD)
 *   **Goal**: Abstract away the chunking logic from the UI.
-*   **Key Functions to Implement**:
-    *   `getBookMetadata(id)`
-    *   `getChapterList(bookId)`
-    *   `getContentItem(bookId, itemId)` -> Resolves chunk ID -> Fetches chunk -> Returns item.
-    *   `getHadithByNumber(bookId, number)` -> Uses `indexes.json` -> Fetches chunk.
-    *   `getVersesBySurah(bookId, surahNum)` -> Uses `headings.json` ranges -> Fetches relevant chunks.
-    *   `getPageContent(bookId, pageNum)` -> Uses `indexes.json` -> Fetches relevant chunks.
+*   **Key Functions**:
+    *   `loadBook`, `loadTOC`, `loadIndex` (with caching).
+    *   `getExcerpt...` functions with chunk resolution.
 
-#### 3. Performance Requirements
-*   **Lazy Loading**: Only fetch chunks when needed.
-*   **Caching**: Cache loaded chunks in memory (LRU cache recommended).
-*   **Prefetching**: Prefetch next chunk when user is near the end of current chunk.
-
-**Agent handoff complete. Data Structure is fully optimized for static deployment! 🚀**
+**Agent handoff complete. Please start with "Refactor Data Types" and "Update Migration Scripts" before writing the API.** 🚀

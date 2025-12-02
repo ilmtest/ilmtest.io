@@ -28,6 +28,16 @@
   - [x] Optimized headings with ranges
 
 ### Phase 2: Core API/Data Access
+- [ ] Refactor Data Types
+  - [ ] Implement discriminated unions for Excerpt
+  - [ ] Create strict Heading types (QuranHeading, HadithHeading)
+  - [ ] Remove unused types
+- [ ] Update Migration Scripts
+  - [ ] Fix `type` assignment logic (omit for generic text)
+  - [ ] Generate `toc.json` (lightweight headings)
+  - [ ] Optimize `indexes.json` (remove `ids` map)
+  - [ ] Add `version` to GlobalIndex
+  - [ ] Update `download-old-data.ts` for robust zip handling
 - [ ] Implement data loading utilities
   - [ ] Load books.json
   - [ ] Load translators.json
