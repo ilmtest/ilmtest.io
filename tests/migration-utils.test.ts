@@ -165,7 +165,7 @@ describe('transformHadithExcerpt', () => {
             volume: 1,
         };
 
-        const transformed = transformHadithExcerpt(old, 2576);
+        const transformed = transformHadithExcerpt(old);
 
         expect(transformed.id).toBe('P10');
         expect(transformed.type).toBe('hadith');
@@ -186,7 +186,7 @@ describe('transformHadithExcerpt', () => {
             volume: 1,
         };
 
-        const transformed = transformHadithExcerpt(old, 2576);
+        const transformed = transformHadithExcerpt(old);
 
         expect(transformed.type).toBe('chapter-title');
         expect(transformed.meta).not.toHaveProperty('hadithNum');
@@ -195,7 +195,7 @@ describe('transformHadithExcerpt', () => {
     it('should use default volume and pp if missing', () => {
         const old: OldHadithExcerpt = { id: 'P1', nass: 'test', page: 1, text: 'test', translator: 873 };
 
-        const transformed = transformHadithExcerpt(old, 2576);
+        const transformed = transformHadithExcerpt(old);
 
         expect(transformed.meta).toHaveProperty('volume', 1);
         expect(transformed.meta).toHaveProperty('pp', 0);
@@ -238,7 +238,7 @@ describe('transformQuranHeading', () => {
 describe('extractHadithHeadings', () => {
     it('should fallback to page-based matching if text does not match', () => {
         const headings: OldHadithHeading[] = [
-            { id: 'T1', nass: 'عنوان مفقود', page: 5, text: 'Missing', translator: 1 },
+            { from: 5, id: 'T1', nass: 'عنوان مفقود', text: 'Missing', translator: 1 },
         ];
 
         const content: OldHadithExcerpt[] = [
@@ -255,8 +255,8 @@ describe('extractHadithHeadings', () => {
 
     it('should extract hadith headings with parent mapping and ranges', () => {
         const headings: OldHadithHeading[] = [
-            { id: 'T5', nass: 'كتاب', page: 1, text: 'Book', translator: 1 },
-            { id: 'T6', nass: 'باب', page: 1, parent: 5, text: 'Chapter', translator: 1 },
+            { from: 1, id: 'T5', nass: 'كتاب', text: 'Book', translator: 1 },
+            { from: 1, id: 'T6', nass: 'باب', parent: 5, text: 'Chapter', translator: 1 },
         ];
 
         const content: OldHadithExcerpt[] = [

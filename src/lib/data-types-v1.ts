@@ -189,6 +189,11 @@ export type GlobalIndex = {
      */
     ids: Record<string, number>;
     /**
+     * Translators used in this book (subset of all translators)
+     * Keyed by translator ID for O(1) lookup
+     */
+    translators: Record<string, Translator>;
+    /**
      * The number of items per chunk
      */
     chunkSize: number;

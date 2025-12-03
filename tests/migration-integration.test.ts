@@ -8,7 +8,7 @@
 
 import { describe, expect, it } from 'bun:test';
 import { migrateHadithData, migrateQuranData } from '../scripts/migration-scripts-v1';
-import type { OldHadithExcerpt, OldQuranExcerpt, OldQuranHeading } from '../scripts/migration-utils';
+import type { OldHadithExcerpt, OldHadithHeading, OldQuranExcerpt, OldQuranHeading } from '../scripts/migration-utils';
 
 // ============================================================================
 // Mock Data
@@ -85,6 +85,28 @@ const mockHadithData = {
             volume: 1,
         },
     ] as OldHadithExcerpt[],
+    headings: [
+        // This represents the bug we fixed - heading has 'from' field indicating content starts at page 8
+        {
+            from: 8,
+            id: 'T1',
+            nass: 'بدء الوحي',
+            pp: 5,
+            text: 'The Beginning of Revelation',
+            translator: 873,
+            volume: 1,
+        },
+        {
+            from: 95,
+            id: 'T2',
+            nass: 'كتاب الإيمان',
+            parent: 1,
+            pp: 19,
+            text: 'Book of Faith',
+            translator: 873,
+            volume: 1,
+        },
+    ] as OldHadithHeading[],
 };
 
 // ============================================================================
@@ -141,7 +163,7 @@ describe('migrateQuranData', () => {
 
 describe('migrateHadithData', () => {
     it('should migrate complete Hadith dataset', () => {
-        const result = migrateHadithData(mockHadithData, 2576);
+        const result = migrateHadithData(mockHadithData);
 
         expect(result).toBeDefined();
         expect(result.content).toBeArrayOfSize(4);
@@ -149,7 +171,7 @@ describe('migrateHadithData', () => {
     });
 
     it('should transform excerpts with correct types', () => {
-        const result = migrateHadithData(mockHadithData, 2576);
+        const result = migrateHadithData(mockHadithData);
 
         const hadithCount = result.content.filter((e) => e.type === 'hadith').length;
         const chapterCount = result.content.filter((e) => e.type === 'chapter-title').length;
@@ -159,7 +181,7 @@ describe('migrateHadithData', () => {
     });
 
     it('should extract hadith numbers correctly', () => {
-        const result = migrateHadithData(mockHadithData, 2576);
+        const result = migrateHadithData(mockHadithData);
 
         const hadith1 = result.content.find((e) => e.id === 'P10');
         const hadith49 = result.content.find((e) => e.id === 'P94');
@@ -169,14 +191,14 @@ describe('migrateHadithData', () => {
     });
 
     it('should not add hadith numbers to chapter titles', () => {
-        const result = migrateHadithData(mockHadithData, 2576);
+        const result = migrateHadithData(mockHadithData);
 
         const chapter = result.content.find((e) => e.id === 'C43');
         expect(chapter?.meta).not.toHaveProperty('hadithNum');
     });
 
     it('should generate valid hadith number index', () => {
-        const result = migrateHadithData(mockHadithData, 2576);
+        const result = migrateHadithData(mockHadithData);
 
         expect(result.indexes.hadithNum['1']).toEqual({ eid: 'P10', page: 10 });
         expect(result.indexes.hadithNum['49']).toEqual({ eid: 'P94', page: 94 });
@@ -184,7 +206,7 @@ describe('migrateHadithData', () => {
     });
 
     it('should generate valid page index', () => {
-        const result = migrateHadithData(mockHadithData, 2576);
+        const result = migrateHadithData(mockHadithData);
 
         expect(result.indexes.page['8']).toEqual({ end: 0, start: 0 });
         expect(result.indexes.page['10']).toEqual({ end: 1, start: 1 });
@@ -192,12 +214,29 @@ describe('migrateHadithData', () => {
         expect(result.indexes.page['94']).toEqual({ end: 3, start: 3 });
     });
 
-    it('should use provided book ID in excerpt IDs', () => {
-        const result = migrateHadithData(mockHadithData, 9999);
+    it('should preserve original excerpt IDs', () => {
+        const result = migrateHadithData(mockHadithData);
 
         result.content.forEach((excerpt) => {
-            expect(excerpt.id).not.toStartWith('9999:'); // No bookId prefix
+            // IDs should be preserved as-is (P8, P10, C43, P94)
+            expect(['P8', 'P10', 'C43', 'P94']).toContain(excerpt.id);
         });
+    });
+
+    it('should correctly use "from" field for heading ranges (bug fix)', () => {
+        const result = migrateHadithData(mockHadithData);
+
+        // The first heading (T1) has from=8, so it should include content starting from page 8
+        const firstHeading = result.headings.find((h) => h.id === 'T1');
+        expect(firstHeading).toBeDefined();
+        expect(firstHeading?.range?.start).toBe('P8'); // Should start at P8 (page 8), not later
+        expect(firstHeading?.page).toBe(8); // Page field should also reflect 'from' value
+
+        // Second heading (T2) has from=95
+        const secondHeading = result.headings.find((h) => h.id === 'T2');
+        expect(secondHeading).toBeDefined();
+        expect(secondHeading?.range?.start).toBe('C43'); // Should start at C43 (page 95)
+        expect(secondHeading?.page).toBe(95);
     });
 });
 
@@ -241,7 +280,7 @@ describe('Data Integrity', () => {
         ['C43', 2],
         ['P94', 3],
     ])('should maintain content order: %s at index %i', (eid, expectedIndex) => {
-        const result = migrateHadithData(mockHadithData, 2576);
+        const result = migrateHadithData(mockHadithData);
         expect(result.content[expectedIndex].id).toBe(eid);
     });
 });

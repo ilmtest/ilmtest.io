@@ -1,7 +1,8 @@
 /**
  * Download Old Data from HuggingFace
  *
- * Downloads content-old.json files dynamically to avoid polluting the repo.
+ * Downloads hadith data files dynamically to avoid polluting the repo.
+ * These files are temporary and will be cleaned up after migration.
  * Uses HF_TOKEN and HF_FILE_TEMPLATE environment variables.
  */
 

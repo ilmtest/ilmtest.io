@@ -185,7 +185,8 @@ export type OldHadithHeading = {
     nass: string;
     text: string;
     translator: number;
-    page: number;
+    from: number; // This is the actual page where content starts
+    page?: number; // This field may not be reliable
     parent?: number;
     volume?: number;
     pp?: number;
@@ -227,12 +228,13 @@ export function extractHadithHeadings(headings: OldHadithHeading[], content: Old
     // 2. Determine start index for each heading
     const headingsWithIndex = headings
         .map((h) => {
-            let startIndex = pageMap.get(h.page);
+            // Use 'from' field which indicates where the content actually starts
+            let startIndex = pageMap.get(h.from);
 
             // Fallback: If exact page has no content (rare), try next few pages
             // This handles cases where a heading is on page X but content starts on X+1
             if (startIndex === undefined) {
-                for (let p = h.page + 1; p <= h.page + 10; p++) {
+                for (let p = h.from + 1; p <= h.from + 10; p++) {
                     if (pageMap.has(p)) {
                         startIndex = pageMap.get(p);
                         break;
@@ -341,7 +343,7 @@ export function extractHadithHeadings(headings: OldHadithHeading[], content: Old
         return {
             id: h.id,
             nass: h.nass,
-            page: h.page,
+            page: h.from, // Use 'from' as the canonical page for this heading
             pp: h.pp ?? 0,
             text: h.text,
             translator: h.translator,
@@ -355,15 +357,26 @@ export function extractHadithHeadings(headings: OldHadithHeading[], content: Old
     });
 }
 
-export function generateGlobalIndex(content: any[], chunkSize: number): import('../src/lib/data-types-v1').GlobalIndex {
+export function generateGlobalIndex(
+    content: any[],
+    headings: any[],
+    allTranslators: import('../src/lib/data-types-v1').Translator[],
+    chunkSize: number,
+): import('../src/lib/data-types-v1').GlobalIndex {
     const hadiths: Record<string, number> = {};
     const pages: Record<string, { start: number; end: number }> = {};
     const ids: Record<string, number> = {};
     const surahs: Record<string, number> = {};
+    const translatorIds = new Set<number>();
 
     content.forEach((item, index) => {
         // Map ID to Index
         ids[item.id] = index;
+
+        // Collect translator ID
+        if (item.translator) {
+            translatorIds.add(item.translator);
+        }
 
         // Map Hadith Number to Index
         if (item.meta?.hadithNum) {
@@ -386,7 +399,22 @@ export function generateGlobalIndex(content: any[], chunkSize: number): import('
         }
     });
 
-    return { chunkSize, hadiths, ids, pages, surahs, totalItems: content.length, version: '1.0.0' };
+    // Collect translator IDs from headings
+    headings.forEach((heading) => {
+        if (heading.translator) {
+            translatorIds.add(heading.translator);
+        }
+    });
+
+    // Build translator index - only include translators actually used
+    const translators: Record<string, import('../src/lib/data-types-v1').Translator> = {};
+    allTranslators.forEach((translator) => {
+        if (translatorIds.has(translator.id)) {
+            translators[translator.id.toString()] = translator;
+        }
+    });
+
+    return { chunkSize, hadiths, ids, pages, surahs, totalItems: content.length, translators, version: '1.0.0' };
 }
 
 // ============================================================================
