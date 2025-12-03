@@ -41,13 +41,13 @@ export const MenuItem = ({ active, children, item, setActive }: MenuItemProps) =
             onMouseEnter={() => setActive(item)}
         >
             <motion.div
-                className="group relative inline-flex h-12 cursor-pointer items-center justify-center overflow-hidden rounded-md px-6 font-medium text-black text-neutral-200 duration-500 dark:text-white"
+                className="group relative inline-flex h-12 cursor-pointer items-center justify-center overflow-hidden rounded-md px-6 font-medium text-gray-800 duration-500 dark:text-white"
                 transition={{ duration: 0.3 }}
             >
                 <div className="group-hover:-translate-y-[150%] translate-y-0 opacity-100 transition group-hover:opacity-0">
                     {item}
                 </div>
-                <IconArrowDown className="absolute translate-y-[150%] opacity-0 transition group-hover:translate-y-0 group-hover:opacity-100" />
+                <IconArrowDown className="absolute translate-y-[150%] text-brand-blue opacity-0 transition group-hover:translate-y-0 group-hover:opacity-100" />
             </motion.div>
             {active !== null && (
                 <motion.div
@@ -58,7 +58,7 @@ export const MenuItem = ({ active, children, item, setActive }: MenuItemProps) =
                     {active === item && (
                         <div className="-translate-x-1/2 absolute top-[calc(100%_+_1.2rem)] left-1/2 transform pt-4">
                             <motion.div
-                                className="overflow-hidden rounded-2xl border border-black/[0.2] bg-white shadow-xl backdrop-blur-sm dark:border-white/[0.2] dark:bg-black"
+                                className="overflow-hidden rounded-2xl border border-gray-200 bg-white/95 shadow-xl backdrop-blur-md dark:border-white/[0.2] dark:bg-black"
                                 layoutId="active" // layoutId ensures smooth animation
                                 transition={transition}
                             >
@@ -84,9 +84,9 @@ export const Menu = ({ children, setActive }: MenuProps) => {
         <MenuContext.Provider value={setActive}>
             <nav
                 aria-label="Primary navigation"
-                className="relative flex justify-center space-x-4 rounded-full border border-transparent px-8 py-6 dark:border-white/[0.2]"
-                onMouseLeave={() => setActive(null)} // resets the state
+                className="relative flex justify-center space-x-4 rounded-full border border-gray-200 bg-white/80 px-8 py-6 shadow-lg backdrop-blur-md dark:border-white/[0.2] dark:bg-black/50"
                 onBlur={() => setActive(null)}
+                onMouseLeave={() => setActive(null)} // resets the state
             >
                 {children}
             </nav>
@@ -101,8 +101,8 @@ export const ProductItem = ({ description, href, src, title }: ProductItemProps)
         <Link className="flex space-x-2" href={href} prefetch={false} role="menuitem">
             <Image alt={title} className="flex-shrink-0 rounded-md shadow-2xl" height={70} src={src} width={140} />
             <div>
-                <h4 className="mb-1 font-bold text-black text-xl dark:text-white">{title}</h4>
-                <p className="max-w-[10rem] text-neutral-700 text-sm dark:text-neutral-300">{description}</p>
+                <h4 className="mb-1 font-bold text-gray-900 text-xl dark:text-white">{title}</h4>
+                <p className="max-w-[10rem] text-gray-600 text-sm dark:text-neutral-300">{description}</p>
             </div>
         </Link>
     );
@@ -117,7 +117,7 @@ export const HoveredLink = ({ children, className, ...rest }: HoveredLinkProps) 
         <Link
             {...rest}
             className={clsx(
-                'group relative inline-flex items-center justify-center overflow-hidden text-neutral-700 hover:text-white dark:text-neutral-200',
+                'group relative inline-flex items-center justify-center overflow-hidden text-gray-700 transition-colors hover:text-brand-blue dark:text-neutral-200 dark:hover:text-brand-blue',
                 className,
             )}
             onMouseEnter={() => setActive?.(null)}

@@ -3,15 +3,47 @@
 @config "../../tailwind.config.ts";
 
 :root {
+    /* Light Theme (Default) */
     --background: #ffffff;
-    --foreground: #171717;
+    --foreground: #1f2937;
+    --muted: #f3f4f6;
+    --muted-foreground: #6b7280;
+    --card: #ffffff;
+    --card-foreground: #1f2937;
+    --border: #e5e7eb;
+    --primary: #22abe3;
+    --primary-foreground: #ffffff;
+    
+    /* Brand Colors */
+    --brand-blue: #22abe3;
+    --brand-orange: #f26824;
+    --brand-green: #8ec641;
+    --brand-yellow: #ffc417;
 }
 
-@media (prefers-color-scheme: dark) {
-    :root {
-        --background: #0a0a0a;
-        --foreground: #ededed;
-    }
+.dark {
+    /* Dark Theme */
+    --background: #0a0a0a;
+    --foreground: #ededed;
+    --muted: #1f2937;
+    --muted-foreground: #9ca3af;
+    --card: #1f2937;
+    --card-foreground: #f9fafb;
+    --border: #374151;
+    --primary: #22abe3;
+    --primary-foreground: #ffffff;
+    
+    /* Brand colors remain the same */
+    --brand-blue: #22abe3;
+    --brand-orange: #f26824;
+    --brand-green: #8ec641;
+    --brand-yellow: #ffc417;
+}
+
+* {
+    transition-property: background-color, border-color, color, fill, stroke;
+    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+    transition-duration: 200ms;
 }
 
 body {

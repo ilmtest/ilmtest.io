@@ -15,13 +15,21 @@ export default {
         './src/components/**/*.{js,ts,jsx,tsx,mdx}',
         './src/app/**/*.{js,ts,jsx,tsx,mdx}',
     ],
+    darkMode: 'class',
     plugins: [addVariablesForColors],
     theme: {
         extend: {
             boxShadow: {
                 input: '`0px 2px 3px -1px rgba(0,0,0,0.1), 0px 1px 0px 0px rgba(25,28,33,0.02), 0px 0px 0px 1px rgba(25,28,33,0.08)`',
             },
-            colors: { background: 'var(--background)', foreground: 'var(--foreground)' },
+            colors: {
+                background: 'var(--background)',
+                'brand-blue': '#22abe3',
+                'brand-green': '#8ec641',
+                'brand-orange': '#f26824',
+                'brand-yellow': '#ffc417',
+                foreground: 'var(--foreground)',
+            },
         },
     },
 } satisfies Config;

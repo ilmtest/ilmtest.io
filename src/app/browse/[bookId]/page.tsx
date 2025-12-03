@@ -35,7 +35,7 @@ export default async function BookHeadingsPage({ params }: { params: Params }) {
 
     return (
         <main className="min-h-screen p-8">
-            <div className="mx-auto max-w-5xl">
+            <div className="w-full px-4 sm:px-6 lg:px-8">
                 {/* Header */}
                 <div className="mb-8">
                     <Link href="/browse" className="mb-4 inline-block text-blue-600 hover:underline dark:text-blue-400">

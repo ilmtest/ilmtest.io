@@ -11,7 +11,7 @@ export default async function BrowsePage() {
 
     return (
         <main className="min-h-screen p-8">
-            <div className="mx-auto max-w-4xl">
+            <div className="w-full px-4 sm:px-6 lg:px-8">
                 <h1 className="mb-8 font-bold text-4xl">Browse Books</h1>
 
                 <div className="grid gap-6 md:grid-cols-2">

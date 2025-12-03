@@ -65,7 +65,7 @@ export default async function HeadingExcerptsPage({ params }: { params: Params }
 
     return (
         <main className="min-h-screen p-8">
-            <div className="mx-auto max-w-4xl">
+            <div className="w-full px-4 sm:px-6 lg:px-8">
                 {/* Breadcrumb Navigation */}
                 <div className="mb-6 text-sm">
                     <Link href="/browse" className="text-blue-600 hover:underline dark:text-blue-400">

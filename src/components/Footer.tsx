@@ -3,26 +3,26 @@ import type React from 'react';
 
 const TooltipIcons = () => {
     return (
-        <div className="flex items-center justify-around gap-4 rounded-[15px] bg-black px-4 py-1 ring-1 ring-white">
+        <div className="flex items-center justify-around gap-4 rounded-[15px] border border-gray-200 bg-white/90 px-4 py-1 shadow-lg backdrop-blur-sm dark:border-white dark:bg-black dark:ring-1 dark:ring-white">
             <a
-                className="group relative rounded-full p-2 transition-all duration-500 hover:cursor-pointer hover:bg-slate-800"
+                className="group relative rounded-full p-2 text-brand-blue transition-all duration-500 hover:cursor-pointer hover:bg-brand-blue/10 dark:text-white dark:hover:bg-slate-800"
                 href="https://github.com/ilmtest"
-                target="_blank"
                 rel="noopener"
+                target="_blank"
             >
                 <IconBrandGithub />
-                <div className="-translate-x-1/2 absolute bottom-full left-1/2 mb-4 w-max scale-50 transform rounded-md bg-black px-2 py-1 text-white opacity-0 transition-all duration-500 group-hover:scale-100 group-hover:opacity-100">
+                <div className="-translate-x-1/2 absolute bottom-full left-1/2 mb-4 w-max scale-50 transform rounded-md bg-gray-900 px-2 py-1 text-white opacity-0 shadow-lg transition-all duration-500 group-hover:scale-100 group-hover:opacity-100 dark:bg-black">
                     GitHub
                 </div>
             </a>
             <a
-                className="group relative rounded-full p-2 transition-all duration-500 hover:cursor-pointer hover:bg-slate-800"
+                className="group relative rounded-full p-2 text-brand-orange transition-all duration-500 hover:cursor-pointer hover:bg-brand-orange/10 dark:text-white dark:hover:bg-slate-800"
                 href="https://instagram.com/ilmtest"
-                target="_blank"
                 rel="noopener"
+                target="_blank"
             >
                 <IconBrandInstagram />
-                <div className="-translate-x-1/2 absolute bottom-full left-1/2 mb-4 w-max scale-50 transform rounded-md bg-black px-2 py-1 text-white opacity-0 transition-all duration-500 group-hover:scale-100 group-hover:opacity-100">
+                <div className="-translate-x-1/2 absolute bottom-full left-1/2 mb-4 w-max scale-50 transform rounded-md bg-gray-900 px-2 py-1 text-white opacity-0 shadow-lg transition-all duration-500 group-hover:scale-100 group-hover:opacity-100 dark:bg-black">
                     Instagram
                 </div>
             </a>

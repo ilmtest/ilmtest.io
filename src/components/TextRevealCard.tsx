@@ -62,7 +62,7 @@ export const TextRevealCard = ({
         <button
             type="button"
             className={cn(
-                'relative w-[80rem] overflow-hidden rounded-lg border border-white/[0.08] bg-[#1d1c20] p-8',
+                'relative w-[80rem] overflow-hidden rounded-lg border border-gray-200 bg-gradient-to-br from-white via-brand-blue/5 to-brand-green/5 p-8 shadow-xl dark:border-white/[0.08] dark:bg-gradient-to-br dark:from-gray-900 dark:via-brand-blue/10 dark:to-gray-900',
                 className,
             )}
             onMouseEnter={mouseEnterHandler}
@@ -85,13 +85,13 @@ export const TextRevealCard = ({
                               }
                             : { clipPath: `inset(0 ${100 - widthPercentage}% 0 0)` }
                     }
-                    className="absolute z-20 bg-[#1d1c20] will-change-transform"
+                    className="absolute z-20 will-change-transform"
                     style={{ width: '100%' }}
                     transition={isMouseOver ? { duration: 0 } : { duration: 0.4 }}
                 >
                     <p
-                        className="bg-gradient-to-b from-white to-neutral-300 bg-clip-text py-10 font-bold text-base text-transparent text-white sm:text-[3rem]"
-                        style={{ textShadow: '4px 4px 15px rgba(0,0,0,0.5)' }}
+                        className="bg-gradient-to-b from-brand-blue to-brand-green bg-clip-text py-10 font-bold text-base text-transparent sm:text-[3rem]"
+                        style={{ textShadow: '2px 2px 8px rgba(34,171,227,0.3)' }}
                     >
                         {revealText}
                     </p>
@@ -106,22 +106,26 @@ export const TextRevealCard = ({
                     transition={isMouseOver ? { duration: 0 } : { duration: 0.4 }}
                 ></motion.div>
 
-                <div className="w-full overflow-hidden [mask-image:linear-gradient(to_bottom,transparent,white,transparent)]">
+                <motion.div
+                    className="w-full overflow-hidden [mask-image:linear-gradient(to_bottom,transparent,white,transparent)]"
+                    animate={{ opacity: widthPercentage > 0 ? 0 : 1 }}
+                    transition={{ duration: 0.2 }}
+                >
                     <p
-                        className="w-full bg-[#323238] bg-clip-text py-10 font-bold text-base text-transparent sm:text-[3rem]"
+                        className="w-full bg-gradient-to-r from-gray-600 to-gray-800 bg-clip-text py-10 font-arabic font-bold text-base text-transparent sm:text-[3rem] dark:from-gray-400 dark:to-gray-600"
                         dir="rtl"
                     >
                         {text}
                     </p>
                     <MemoizedStars />
-                </div>
+                </motion.div>
             </div>
         </button>
     );
 };
 
 export const TextRevealCardTitle = ({ children, className }: { children: React.ReactNode; className?: string }) => {
-    return <h2 className={twMerge('mb-2 text-md text-white', className)}>{children}</h2>;
+    return <h2 className={twMerge('mb-2 text-gray-800 text-md dark:text-white', className)}>{children}</h2>;
 };
 
 export const TextRevealCardDescription = ({
@@ -131,7 +135,7 @@ export const TextRevealCardDescription = ({
     children: React.ReactNode;
     className?: string;
 }) => {
-    return <p className={twMerge('text-[#a9a9a9] text-sm', className)}>{children}</p>;
+    return <p className={twMerge('text-gray-600 text-sm dark:text-gray-400', className)}>{children}</p>;
 };
 
 const Stars = () => {

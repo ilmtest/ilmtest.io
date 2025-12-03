@@ -60,9 +60,11 @@ interface CardProps {
 }
 
 const Card: React.FC<CardProps> = ({ Icon, statProps }) => (
-    <div className="flex flex-col rounded-xl border bg-white shadow-sm dark:border-neutral-800 dark:bg-neutral-900">
+    <div className="flex flex-col rounded-xl border border-gray-200 bg-gradient-to-br from-white to-gray-50 shadow-lg transition-all hover:scale-105 hover:shadow-xl dark:border-neutral-800 dark:from-neutral-900 dark:to-neutral-950">
         <div className="flex gap-x-4 p-4 md:p-5">
-            <Icon className="inline-block size-6 self-center" />
+            <div className="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-lg bg-gradient-to-br from-brand-blue to-brand-green">
+                <Icon className="size-6 text-white" />
+            </div>
             <Stat {...statProps} />
         </div>
     </div>
@@ -70,7 +72,7 @@ const Card: React.FC<CardProps> = ({ Icon, statProps }) => (
 
 export const StatsRow: React.FC = () => {
     return (
-        <div className="mx-auto max-w-[85rem] px-4 py-10 sm:px-6 lg:px-8 lg:py-14">
+        <div className="mx-auto max-w-[85rem] px-4 py-6 sm:px-6 lg:px-8 lg:py-10">
             <div className="grid gap-4 sm:grid-cols-2 sm:gap-6 lg:grid-cols-4">
                 <Card
                     Icon={IconBulb}

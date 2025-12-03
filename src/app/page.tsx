@@ -16,7 +16,7 @@ export default function Home() {
         <>
             <HeroParallax products={socials} />
             <StatsRow />
-            <div className="my-12 flex w-full flex-col items-center justify-center">
+            <div className="my-6 flex w-full flex-col items-center justify-center">
                 <h1 className="mb-2 max-w-3xl text-center font-semibold text-2xl text-gray-900 tracking-tighter md:text-3xl dark:text-gray-100">
                     Features
                 </h1>
@@ -26,7 +26,7 @@ export default function Home() {
                 </p>
                 <FeaturesSectionDemo />
             </div>
-            <div className="flex h-[30rem] w-full items-center justify-center rounded-2xl bg-[#0E0E10]">
+            <div className="my-8 flex w-full flex-col items-center justify-center py-8">
                 <TextRevealCard
                     revealText="“Be like a person whose feet are on the ground, his ambitions in the heavens.”"
                     text="فكن رجلا رجله فِي الثرى وهامة همته فِي الثريا"
