@@ -53,5 +53,5 @@ body {
 }
 
 .font-arabic {
-    font-family: 'IBM Plex Sans Arabic', 'Traditional Arabic', 'Al Bayan', 'Geeza Pro', sans-serif;
+    font-family: var(--font-noto-naskh-arabic), var(--font-ibm-plex-sans-arabic), 'Traditional Arabic', 'Al Bayan', 'Geeza Pro', sans-serif;
 }

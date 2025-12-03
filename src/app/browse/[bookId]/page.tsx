@@ -1,10 +1,16 @@
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
-import { findHeadingById, getTopLevelHeadings, loadBookHeadings, loadBooks } from '@/lib/data-loader';
+import { getTopLevelHeadings, loadBookHeadings, loadBooks } from '@/lib/data-loader';
 
 type Params = Promise<{ bookId: string }>;
 
 export async function generateStaticParams() {
+    // In development, we don't need to pre-generate params.
+    // Next.js will render pages on demand.
+    if (process.env.NODE_ENV === 'development') {
+        return [];
+    }
+
     const books = await loadBooks();
     return books.map((book) => ({ bookId: book.id.toString() }));
 }

@@ -1,3 +1,4 @@
+import { Link as LinkIcon } from 'lucide-react';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import {
@@ -11,6 +12,11 @@ import {
 type Params = Promise<{ bookId: string; headingId: string }>;
 
 export async function generateStaticParams() {
+    // In development, we don't need to pre-generate params.
+    if (process.env.NODE_ENV === 'development') {
+        return [];
+    }
+
     const books = await loadBooks();
     const allParams = [];
 
@@ -100,17 +106,32 @@ export default async function HeadingExcerptsPage({ params }: { params: Params }
                 <div className="space-y-6">
                     {excerpts.map((excerpt) => {
                         const isChapterTitle = 'type' in excerpt && excerpt.type === 'chapter-title';
+                        const excerptUrl = `/browse/${bookId}/${headingId}/${excerpt.id}`;
 
                         if (isChapterTitle) {
                             return (
                                 <div
                                     key={excerpt.id}
-                                    className="border-gray-300 border-t-2 pt-6 pb-2 dark:border-gray-600"
+                                    className="group relative border-gray-300 border-t-2 pt-6 pb-2 dark:border-gray-600"
                                 >
-                                    <h2 className="mb-1 font-semibold text-xl">{excerpt.text}</h2>
-                                    <p className="font-arabic text-gray-700 text-lg dark:text-gray-300" dir="rtl">
-                                        {excerpt.nass}
-                                    </p>
+                                    <div className="flex items-start justify-between gap-4">
+                                        <div className="flex-1">
+                                            <h2 className="mb-1 font-semibold text-xl">{excerpt.text}</h2>
+                                            <p
+                                                className="font-arabic text-gray-700 text-lg dark:text-gray-300"
+                                                dir="rtl"
+                                            >
+                                                {excerpt.nass}
+                                            </p>
+                                        </div>
+                                        <Link
+                                            href={excerptUrl as any}
+                                            className="p-2 text-gray-400 opacity-0 transition-opacity hover:text-blue-600 group-hover:opacity-100"
+                                            title="Share / View Details"
+                                        >
+                                            <LinkIcon size={20} />
+                                        </Link>
+                                    </div>
                                 </div>
                             );
                         }
@@ -118,7 +139,7 @@ export default async function HeadingExcerptsPage({ params }: { params: Params }
                         return (
                             <article
                                 key={excerpt.id}
-                                className="rounded-lg border border-gray-200 bg-white p-6 shadow-sm dark:border-gray-700 dark:bg-gray-800"
+                                className="group relative rounded-lg border border-gray-200 bg-white p-6 shadow-sm dark:border-gray-700 dark:bg-gray-800"
                             >
                                 {/* Arabic Text */}
                                 <p
@@ -134,21 +155,31 @@ export default async function HeadingExcerptsPage({ params }: { params: Params }
                                 </p>
 
                                 {/* Metadata */}
-                                <div className="flex gap-4 border-gray-200 border-t pt-4 text-gray-500 text-sm dark:border-gray-700 dark:text-gray-400">
-                                    <span>Page {excerpt.page}</span>
-                                    {'type' in excerpt &&
-                                        excerpt.type === 'verse' &&
-                                        'meta' in excerpt &&
-                                        'surah' in excerpt.meta && (
-                                            <span>
-                                                Verse {excerpt.meta.surah}:{excerpt.meta.verse}
-                                            </span>
-                                        )}
-                                    {'type' in excerpt &&
-                                        excerpt.type === 'hadith' &&
-                                        'meta' in excerpt &&
-                                        'hadithNum' in excerpt.meta &&
-                                        excerpt.meta.hadithNum && <span>Hadith #{excerpt.meta.hadithNum}</span>}
+                                <div className="flex flex-wrap items-center justify-between gap-4 border-gray-200 border-t pt-4 text-gray-500 text-sm dark:border-gray-700 dark:text-gray-400">
+                                    <div className="flex gap-4">
+                                        <span>Page {excerpt.page}</span>
+                                        {'type' in excerpt &&
+                                            excerpt.type === 'verse' &&
+                                            'meta' in excerpt &&
+                                            'surah' in excerpt.meta && (
+                                                <span>
+                                                    Verse {excerpt.meta.surah}:{excerpt.meta.verse}
+                                                </span>
+                                            )}
+                                        {'type' in excerpt &&
+                                            excerpt.type === 'hadith' &&
+                                            'meta' in excerpt &&
+                                            'hadithNum' in excerpt.meta &&
+                                            excerpt.meta.hadithNum && <span>Hadith #{excerpt.meta.hadithNum}</span>}
+                                    </div>
+
+                                    <Link
+                                        href={excerptUrl as any}
+                                        className="text-gray-400 hover:text-blue-600"
+                                        title="Share / View Details"
+                                    >
+                                        <LinkIcon size={18} />
+                                    </Link>
                                 </div>
                             </article>
                         );

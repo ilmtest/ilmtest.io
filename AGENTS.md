@@ -527,3 +527,33 @@ We optimized the data structure to ensure maximum performance on Cloudflare's fr
     *   `getExcerpt...` functions with chunk resolution.
 
 **Agent handoff complete. Please start with "Refactor Data Types" and "Update Migration Scripts" before writing the API.** 🚀
+
+---
+
+## Session Update: UI Polish & Build Optimization (2025-12-03)
+
+### What Was Accomplished
+
+#### 1. Build Optimization ✅
+*   **Problem**: `next dev` was slow because `generateStaticParams` was pre-calculating 17,000+ paths even in development.
+*   **Solution**:
+    *   Updated `next.config.ts` to conditionally apply `output: 'export'` only in production (`process.env.NODE_ENV !== 'development'`).
+    *   Updated `generateStaticParams` to return `[]` in development, enabling instant on-demand rendering.
+    *   **Result**: `bun dev` is now instant. `bun run build` still generates full static site.
+
+#### 2. UI Enhancements ✅
+*   **Arabic Font**: Switched from `Amiri` to **`Noto Naskh Arabic`** for better legibility and aesthetics.
+*   **Theme Toggle**: Moved from Navbar to **Footer**, alongside social icons.
+*   **Excerpt Links**: Moved the "Share / View Details" link from a hover overlay (inaccessible on mobile) to the **metadata footer** of each excerpt card.
+
+#### 3. Test Suite Fixes ✅
+*   Updated all tests to match the current data structure:
+    *   **Chunked Content**: Tests now correctly read multiple JSON chunks from `content/` directory.
+    *   **Consolidated Indexes**: Tests now read from `indexes.json` instead of separate files.
+    *   **ID Format**: Updated expectations to match the new ID format (dashes instead of colons, e.g., `1-1`).
+    *   **Capitalization**: Fixed minor text expectation mismatches.
+*   **Status**: All 76 tests passing.
+
+### Next Steps
+*   Proceed with **Phase 2: Core API/Data Access** as planned.
+*   The codebase is now stable, optimized for dev speed, and has a polished UI foundation.

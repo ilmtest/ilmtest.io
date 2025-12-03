@@ -7,7 +7,15 @@
 
 import { readFile } from 'node:fs/promises';
 import { join } from 'node:path';
-import type { Book, BooksManifest, ContentManifest, Heading, HeadingsManifest } from './data-types-v1';
+import type {
+    Book,
+    BooksManifest,
+    ContentManifest,
+    Excerpt,
+    GlobalIndex,
+    Heading,
+    HeadingsManifest,
+} from './data-types-v1';
 
 const DATA_DIR = join(process.cwd(), 'public/data');
 
@@ -90,4 +98,32 @@ export async function loadHeadingExcerpts(bookId: number, heading: Heading) {
     const endOffset = startOffset + (end - start) + 1;
 
     return allContent.slice(startOffset, endOffset);
+}
+
+/**
+ * Load the global index for a book
+ */
+export async function loadBookIndex(bookId: number): Promise<GlobalIndex> {
+    const path = join(DATA_DIR, 'books', bookId.toString(), 'indexes.json');
+    const content = await readFile(path, 'utf-8');
+    return JSON.parse(content);
+}
+
+/**
+ * Load a single excerpt by ID using the global index
+ */
+export async function loadExcerptById(bookId: number, excerptId: string): Promise<Excerpt | null> {
+    const index = await loadBookIndex(bookId);
+    const globalIndex = index.ids[excerptId];
+
+    if (globalIndex === undefined) {
+        return null;
+    }
+
+    const chunkSize = index.chunkSize;
+    const chunkId = Math.floor(globalIndex / chunkSize);
+    const chunk = await loadBookContentChunk(bookId, chunkId);
+
+    const localIndex = globalIndex % chunkSize;
+    return chunk.content[localIndex] || null;
 }

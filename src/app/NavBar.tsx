@@ -1,7 +1,6 @@
 'use client';
 import { useState } from 'react';
 import { HoveredLink, Menu, MenuItem, ProductItem } from '@/components/NavBar';
-import { ThemeToggle } from '@/components/ThemeToggle';
 import { cn } from '@/lib/utils';
 
 export default function Navbar({ className }: { className?: string }) {
@@ -28,7 +27,6 @@ export default function Navbar({ className }: { className?: string }) {
                         </div>
                     </MenuItem>
                 </Menu>
-                <ThemeToggle />
             </div>
         </div>
     );

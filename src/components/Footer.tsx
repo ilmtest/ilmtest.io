@@ -1,6 +1,8 @@
 import { IconBrandGithub, IconBrandInstagram } from '@tabler/icons-react';
 import type React from 'react';
 
+import { ThemeToggle } from './ThemeToggle';
+
 const TooltipIcons = () => {
     return (
         <div className="flex items-center justify-around gap-4 rounded-[15px] border border-gray-200 bg-white/90 px-4 py-1 shadow-lg backdrop-blur-sm dark:border-white dark:bg-black dark:ring-1 dark:ring-white">
@@ -34,8 +36,9 @@ export const Footer: React.FC = () => {
     return (
         <footer className="w-full">
             <div className="mx-auto w-full max-w-6xl px-4 py-12 sm:px-6 lg:px-8">
-                <div className="mt-5 flex justify-center space-x-6">
+                <div className="mt-5 flex flex-col items-center justify-center gap-6 sm:flex-row">
                     <TooltipIcons />
+                    <ThemeToggle />
                 </div>
 
                 <p className="mt-6 text-center text-gray-600 text-sm dark:text-gray-100">

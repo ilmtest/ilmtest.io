@@ -156,8 +156,11 @@ export async function migrateQuran(outputDir: string) {
     console.log(`   ✓ Fetched ${allTranslators.length} translators from API`);
 
     // Fetch data from API
-    const entries = await getEntries({ collection: Number(CommonCollectionIds.Quran), limit: -1 });
+    const entries = await getEntries({ collection: Number(CommonCollectionIds.Quran), full: 1, limit: -1 } as any);
     console.log(`   ✓ Fetched ${entries.length} entries from API`);
+    if (entries.length > 0) {
+        console.log('Sample Entry:', JSON.stringify(entries[0], null, 2));
+    }
 
     // Transform to old format for migration
     const oldContent: OldQuranExcerpt[] = entries
@@ -166,7 +169,7 @@ export async function migrateQuran(outputDir: string) {
             chapter: 0, // Chapter field not used for Qur'an
             id: e.id,
             nass: e.ar_body!,
-            page: e.from_page!,
+            page: Number(e.from_page!),
             surah: e.part_number!,
             text: e.body,
             translator: e.translator!,
@@ -179,7 +182,7 @@ export async function migrateQuran(outputDir: string) {
             id: e.id,
             nass: e.ar_body!,
             num: e.index_number!,
-            page: e.from_page!,
+            page: Number(e.from_page!),
             text: e.body!,
             translator: e.translator!,
         }));

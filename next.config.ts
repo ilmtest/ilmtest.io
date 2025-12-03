@@ -21,7 +21,7 @@ const nextConfig: NextConfig = {
         remotePatterns: [{ hostname: 'pbs.twimg.com', pathname: '/media/**', port: '', protocol: 'https', search: '' }],
         unoptimized: true, // Disable server-based image optimization. Next.js does not support dynamic features with static exports
     },
-    output: 'export', // enables static exports which is needed for GitHub Pages
+    output: process.env.NODE_ENV === 'development' ? undefined : 'export', // enables static exports which is needed for GitHub Pages, but disabled in dev for dynamic rendering
     reactStrictMode: true,
     trailingSlash: true,
     typedRoutes: true,

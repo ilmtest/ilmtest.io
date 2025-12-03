@@ -127,7 +127,7 @@ describe('migrateQuranData', () => {
         const result = migrateQuranData(mockQuranData);
 
         const first = result.content[0];
-        expect(first.id).toBe('1:1');
+        expect(first.id).toBe('1-1');
         expect(first.type).toBe('verse');
         expect(first.meta).toHaveProperty('surah', 1);
     });

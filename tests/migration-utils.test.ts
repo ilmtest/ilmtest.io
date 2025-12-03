@@ -108,12 +108,12 @@ describe('transformQuranExcerpt', () => {
 
         const transformed = transformQuranExcerpt(old);
 
-        expect(transformed.id).toBe('1:1');
+        expect(transformed.id).toBe('1-1');
         expect(transformed.type).toBe('verse');
-        expect(transformed.nass).toBe(old.nass);
-        expect(transformed.text).toBe(old.text);
-        expect(transformed.meta).toHaveProperty('surah', 1);
-        expect(transformed.meta).toHaveProperty('verse', 1);
+        expect(transformed.text).toBe('In the Name of Allah');
+        expect(transformed.nass).toBe('بِسْمِ ٱللَّهِ');
+        expect(transformed.page).toBe(1);
+        expect(transformed.meta).toEqual({ surah: 1, verse: 1 });
     });
 
     it('should preserve translator ID', () => {
@@ -145,7 +145,7 @@ describe('transformQuranExcerpt', () => {
         };
 
         const transformed = transformQuranExcerpt(old);
-        expect(transformed.id).toBe('114:6');
+        expect(transformed.id).toBe('114-6');
     });
 });
 

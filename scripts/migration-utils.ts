@@ -120,10 +120,10 @@ export type OldQuranExcerpt = {
 export function transformQuranExcerpt(excerpt: OldQuranExcerpt): Excerpt {
     const { surah, verse } = excerpt;
     return {
-        id: `${surah}:${verse}`,
+        id: `${surah}-${verse}`,
         meta: { surah, verse },
         nass: excerpt.nass,
-        page: excerpt.page,
+        page: Number(excerpt.page),
         text: excerpt.text,
         translator: excerpt.translator,
         type: 'verse',
@@ -156,7 +156,7 @@ export function transformHadithExcerpt(excerpt: OldHadithExcerpt): Excerpt {
         ...(isChapterTitle ? { type: 'chapter-title' as const } : hadithNum ? { type: 'hadith' as const } : {}),
         meta: { pp: excerpt.pp ?? 0, volume: excerpt.volume ?? 1, ...(hadithNum && { hadithNum }) },
         nass: excerpt.nass,
-        page: excerpt.page,
+        page: Number(excerpt.page),
         text: excerpt.text,
         translator: excerpt.translator,
     };

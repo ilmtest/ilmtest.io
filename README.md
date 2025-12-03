@@ -155,7 +155,8 @@ Visit `/browse` to explore:
 
 **Features:**
 - Static export ready (all pages pre-generated)
-- Arabic text with IBM Plex Sans Arabic font
+- Arabic text with **Noto Naskh Arabic** font
+- **Instant Development**: Optimized dev server skips static generation
 - RTL text rendering
 - Dark mode support
 - Breadcrumb navigation

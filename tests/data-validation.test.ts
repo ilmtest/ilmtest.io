@@ -6,6 +6,7 @@
  */
 
 import { describe, expect, it } from 'bun:test';
+import { readdir } from 'node:fs/promises';
 import { join } from 'node:path';
 import type { Book, Excerpt, HadithMetadata, Heading, VerseMetadata } from '../src/lib/data-types-v1';
 
@@ -18,6 +19,28 @@ const DATA_DIR = './public/data';
 async function loadJSON<T>(path: string): Promise<T> {
     const file = Bun.file(path);
     return await file.json();
+}
+
+async function loadContent(bookId: string): Promise<{ content: Excerpt[] }> {
+    const contentDir = join(DATA_DIR, `books/${bookId}/content`);
+    const files = await readdir(contentDir);
+    const jsonFiles = files.filter((f) => f.endsWith('.json'));
+
+    // Sort files numerically (0.json, 1.json, 2.json...)
+    jsonFiles.sort((a, b) => {
+        const numA = parseInt(a.split('.')[0]);
+        const numB = parseInt(b.split('.')[0]);
+        return numA - numB;
+    });
+
+    let allContent: Excerpt[] = [];
+
+    for (const file of jsonFiles) {
+        const data = await loadJSON<{ content: Excerpt[] }>(join(contentDir, file));
+        allContent = allContent.concat(data.content);
+    }
+
+    return { content: allContent };
 }
 
 // ============================================================================
@@ -75,18 +98,18 @@ describe('Books Metadata Validation', () => {
 
 describe("Qur'an Content Validation", () => {
     it("should load Qur'an content", async () => {
-        const data = await loadJSON<{ content: Excerpt[] }>(join(DATA_DIR, 'books/1/content.json'));
+        const data = await loadContent('1');
 
         expect(data.content).toBeArray();
         expect(data.content.length).toBeGreaterThan(6000);
     });
 
     it('should have valid verse structure', async () => {
-        const data = await loadJSON<{ content: Excerpt[] }>(join(DATA_DIR, 'books/1/content.json'));
+        const data = await loadContent('1');
 
         const verse = data.content[0];
 
-        expect(verse.id).toMatch(/^\d+:\d+$/);
+        expect(verse.id).toMatch(/^\d+-\d+$/);
         expect(verse.type).toBe('verse');
         expect(verse.nass).toBeString();
         expect(verse.text).toBeString();
@@ -96,7 +119,7 @@ describe("Qur'an Content Validation", () => {
     });
 
     it('should have Al-Fatiha 1:1 as first verse', async () => {
-        const data = await loadJSON<{ content: Excerpt[] }>(join(DATA_DIR, 'books/1/content.json'));
+        const data = await loadContent('1');
 
         const first = data.content[0];
         const meta = first.meta as VerseMetadata;
@@ -147,9 +170,8 @@ describe("Qur'an Headings Validation", () => {
 
 describe("Qur'an Index Validation", () => {
     it('should have valid surah:verse index', async () => {
-        const index = await loadJSON<Record<string, { eid: number; page: number }>>(
-            join(DATA_DIR, 'books/1/indexes/surah-verse.json'),
-        );
+        const indexes = await loadJSON<any>(join(DATA_DIR, 'books/1/indexes.json'));
+        const index = indexes.surahs;
 
         expect(Object.keys(index).length).toBeGreaterThan(6000);
         expect(index['1:1']).toBeDefined();
@@ -158,9 +180,8 @@ describe("Qur'an Index Validation", () => {
     });
 
     it('should have valid page index', async () => {
-        const index = await loadJSON<Record<string, { start: number; end: number }>>(
-            join(DATA_DIR, 'books/1/indexes/page.json'),
-        );
+        const indexes = await loadJSON<any>(join(DATA_DIR, 'books/1/indexes.json'));
+        const index = indexes.pages;
 
         expect(Object.keys(index).length).toBe(604);
         expect(index['1']).toBeDefined();
@@ -174,14 +195,14 @@ describe("Qur'an Index Validation", () => {
 
 describe('Hadith Content Validation', () => {
     it('should load Hadith content', async () => {
-        const data = await loadJSON<{ content: Excerpt[] }>(join(DATA_DIR, 'books/2576/content.json'));
+        const data = await loadContent('2576');
 
         expect(data.content).toBeArray();
         expect(data.content.length).toBeGreaterThan(7000);
     });
 
     it('should have valid hadith structure', async () => {
-        const data = await loadJSON<{ content: Excerpt[] }>(join(DATA_DIR, 'books/2576/content.json'));
+        const data = await loadContent('2576');
 
         const hadith = data.content.find((e) => e.type === 'hadith');
 
@@ -193,7 +214,7 @@ describe('Hadith Content Validation', () => {
     });
 
     it('should have chapter titles', async () => {
-        const data = await loadJSON<{ content: Excerpt[] }>(join(DATA_DIR, 'books/2576/content.json'));
+        const data = await loadContent('2576');
 
         const chapter = data.content.find((e) => e.type === 'chapter-title');
         expect(chapter).toBeDefined();
@@ -206,9 +227,8 @@ describe('Hadith Content Validation', () => {
 
 describe('Hadith Index Validation', () => {
     it('should have valid hadith number index', async () => {
-        const index = await loadJSON<Record<string, { eid: string; page: number }>>(
-            join(DATA_DIR, 'books/2576/indexes/hadith-num.json'),
-        );
+        const indexes = await loadJSON<any>(join(DATA_DIR, 'books/2576/indexes.json'));
+        const index = indexes.hadiths;
 
         expect(Object.keys(index).length).toBeGreaterThan(7000);
         expect(index['1']).toBeDefined();
@@ -222,21 +242,21 @@ describe('Hadith Index Validation', () => {
 
 describe('Data Integrity', () => {
     it("should have unique excerpt IDs in Qur'an", async () => {
-        const data = await loadJSON<{ content: Excerpt[] }>(join(DATA_DIR, 'books/1/content.json'));
+        const data = await loadContent('1');
 
         const ids = new Set(data.content.map((e) => e.id));
         expect(ids.size).toBe(data.content.length);
     });
 
     it('should have unique excerpt IDs in Hadith', async () => {
-        const data = await loadJSON<{ content: Excerpt[] }>(join(DATA_DIR, 'books/2576/content.json'));
+        const data = await loadContent('2576');
 
         const ids = new Set(data.content.map((e) => e.id));
         expect(ids.size).toBe(data.content.length);
     });
 
     it('should have valid page numbers', async () => {
-        const data = await loadJSON<{ content: Excerpt[] }>(join(DATA_DIR, 'books/1/content.json'));
+        const data = await loadContent('1');
 
         const sample = data.content.slice(0, 100);
 
