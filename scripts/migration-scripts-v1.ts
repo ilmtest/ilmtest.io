@@ -9,13 +9,7 @@
 
 import { mkdir, rmdir, unlink } from 'node:fs/promises';
 import { join } from 'node:path';
-import {
-    CommonCollectionIds,
-    doApiGet,
-    getEntries,
-    init,
-    type Translator as LegacyTranslator,
-} from '@ilmtest/ilmtest-sdk-js';
+import { CommonCollectionIds, getEntries, init } from '@ilmtest/ilmtest-sdk-js';
 import {
     extractHadithHeadings,
     generateGlobalIndex,
@@ -48,11 +42,8 @@ export function migrateQuranData(oldData: { content: OldQuranExcerpt[]; headings
     return { content: newContent, headings: newHeadings, indexes: { page: pageIndex, surahVerse: surahVerseIndex } };
 }
 
-export function migrateHadithData(
-    oldData: { content: OldHadithExcerpt[]; headings: OldHadithHeading[] },
-    bookId: number,
-) {
-    const newContent = transformHadithContent(oldData.content, bookId);
+export function migrateHadithData(oldData: { content: OldHadithExcerpt[]; headings: OldHadithHeading[] }) {
+    const newContent = transformHadithContent(oldData.content);
     const newHeadings = extractHadithHeadings(oldData.headings, oldData.content);
 
     const hadithNumIndex = generateHadithNumIndex(
@@ -73,14 +64,41 @@ export function migrateHadithData(
 // File I/O Functions (Side Effects)
 // ============================================================================
 
-async function loadOldQuranData(inputPath: string) {
-    const file = Bun.file(inputPath);
-    return await file.json();
-}
-
 async function loadOldHadithData(inputPath: string) {
     const file = Bun.file(inputPath);
-    return await file.json();
+    const data = await file.json();
+
+    // Handle the new format with 'excerpts' array
+    if (data.excerpts && Array.isArray(data.excerpts)) {
+        // Transform the new format to the old format expected by migration
+        const content = data.excerpts
+            .filter((e: any) => e.type !== undefined) // Only include items with a type field
+            .map((e: any) => ({
+                id: e.id,
+                nass: e.arabic,
+                page: e.from,
+                text: e.translation,
+                translator: e.translator,
+                type: e.type,
+            }));
+
+        // Extract headings from the data
+        const headings = (data.headings || []).map((h: any) => ({
+            id: h.id,
+            nass: h.nass || h.arabic,
+            page: h.from,
+            parent: h.parent,
+            pp: h.pp,
+            text: h.text || h.translation,
+            translator: h.translator,
+            volume: h.volume,
+        }));
+
+        return { content, headings };
+    }
+
+    // Fallback to old format
+    return data;
 }
 
 async function writeContentFile(outputPath: string, content: any[]) {
@@ -99,10 +117,42 @@ async function writeIndexFile(outputPath: string, index: any) {
 // Migration Runners (I/O + Business Logic)
 // ============================================================================
 
-export async function migrateQuran(inputPath: string, outputDir: string) {
+export async function migrateQuran(outputDir: string) {
     console.log("📖 Migrating Qur'an...");
 
-    const oldData = await loadOldQuranData(inputPath);
+    // Initialize SDK
+    init('3', process.env.ILMTEST_API_URL!);
+
+    // Fetch data from API
+    const entries = await getEntries({ collection: Number(CommonCollectionIds.Quran), limit: -1 });
+    console.log(`   ✓ Fetched ${entries.length} entries from API`);
+
+    // Transform to old format for migration
+    const oldContent: OldQuranExcerpt[] = entries
+        .filter((e) => !e.type)
+        .map((e) => ({
+            chapter: 0, // Chapter field not used for Qur'an
+            id: e.id,
+            nass: e.ar_body!,
+            page: e.from_page!,
+            surah: e.part_number!,
+            text: e.body,
+            translator: e.translator!,
+            verse: e.part_page!,
+        }));
+
+    const oldHeadings: OldQuranHeading[] = entries
+        .filter((e) => e.type)
+        .map((e) => ({
+            id: e.id,
+            nass: e.ar_body!,
+            num: e.index_number!,
+            page: e.from_page!,
+            text: e.body!,
+            translator: e.translator!,
+        }));
+
+    const oldData = { content: oldContent, headings: oldHeadings };
     const migrated = migrateQuranData(oldData);
 
     // 4. Generate Global Index
@@ -142,7 +192,6 @@ export async function migrateQuran(inputPath: string, outputDir: string) {
     console.log(`  ✓ ${numChunks} content chunks generated\n`);
 }
 
-import type { Excerpt, Heading, Translator } from '../src/lib/data-types-v1';
 import { downloadOldData } from './download-old-data';
 
 // ... (imports)
@@ -157,14 +206,14 @@ export async function migrateHadith(inputPath: string, outputDir: string, bookId
         console.log(`   File not found locally: ${inputPath}`);
         try {
             dataPath = await downloadOldData(bookId, outputDir);
-        } catch (e) {
+        } catch {
             console.warn(`   ⚠️ Could not download data for book ${bookId}. Skipping.`);
             return;
         }
     }
 
     const oldData = await loadOldHadithData(dataPath);
-    const migrated = migrateHadithData(oldData, bookId);
+    const migrated = migrateHadithData(oldData);
 
     // 4. Generate Global Index
     const CHUNK_SIZE = 500;
@@ -214,7 +263,7 @@ async function migrate() {
     const dataDir = './public/data';
 
     // Qur'an
-    //await migrateQuran(join(dataDir, 'books/1/content-old.json'), join(dataDir, 'books/1'));
+    await migrateQuran(join(dataDir, 'books/1'));
 
     // Sahih al-Bukhari
     await migrateHadith(join(dataDir, 'books/2576/content-old.json'), join(dataDir, 'books/2576'), 2576);
@@ -222,41 +271,6 @@ async function migrate() {
     console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
     console.log('✅ Migration complete!\n');
 }
-
-const downloadQuran = async () => {
-    init('3', process.env.ILMTEST_API_URL!);
-
-    const entries = await getEntries({ collection: Number(CommonCollectionIds.Quran), limit: -1 });
-    console.log('entries', entries);
-    const ayats: Excerpt[] = entries
-        .filter((e) => !e.type)
-        .map((e) => ({
-            id: e.id.toString(),
-            meta: { surah: e.part_number!, verse: e.part_page! },
-            nass: e.ar_body!,
-            page: e.from_page!,
-            text: e.body,
-            translator: e.translator!,
-            type: 'verse',
-        }));
-
-    const headings: OldQuranHeading[] = entries
-        .filter((e) => e.type)
-        .map((e) => ({
-            id: e.id,
-            nass: e.ar_body!,
-            num: e.index_number!,
-            page: e.from_page!,
-            text: e.body!,
-            translator: e.translator!,
-        }));
-
-    const translators: Translator[] = (await doApiGet<LegacyTranslator[]>('translators', { limit: -1 })).map((t) => ({
-        id: t.id,
-        name: t.name,
-        ...(t.instagram && { img: t.instagram }),
-    }));
-};
 
 // Run if executed directly
 if (import.meta.main) {

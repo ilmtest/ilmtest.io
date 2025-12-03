@@ -85,6 +85,86 @@ bun run format
 bun run lint
 ```
 
+## 📚 Current Implementation (v1.0)
+
+### Data Architecture
+
+The project uses a **unified JSON-based data structure** optimized for static CDN delivery:
+
+**Key Features:**
+- **Discriminated union types** for type-safe content handling
+- **Chunked content** (500 items per chunk) for efficient loading
+- **Consolidated indexes** with O(1) lookups for verses, hadith numbers, and pages
+- **Smart chunk loading** using `indexRange` metadata
+- **Version-controlled indexes** for cache busting
+
+### Data Structure
+
+```typescript
+// Discriminated unions for type safety
+type VerseExcerpt = {
+    type: 'verse';
+    meta: { surah: number; verse: number };
+    // ...
+};
+
+type HadithExcerpt = {
+    type: 'hadith';
+    meta: { volume: number; pp: number; hadithNum?: number };
+    // ...
+};
+
+// Strict heading types
+type QuranHeading = {
+    type: 'quran';
+    surah: number;
+    // ...
+};
+
+type HadithHeading = {
+    type: 'hadith';
+    volume: number;
+    pp: number;
+    parent?: string;
+    // ...
+};
+```
+
+### Migration System
+
+Use the migration scripts to transform source data:
+
+```bash
+# Run migrations (requires HuggingFace token)
+export HF_TOKEN="your_token"
+export HF_FILE_TEMPLATE="rhaq/shamela_translations/resolve/main/{{bookId}}.json.zip"
+export ILMTEST_API_URL="https://api.ilmtest.com"
+bun run migrate
+```
+
+**What gets migrated:**
+- Qur'an from API (6,236 verses, 114 surahs)
+- Hadith collections from HuggingFace (e.g., Sahih al-Bukhari: 10,967 excerpts, 4,146 headings)
+
+### Browse UI
+
+Visit `/browse` to explore:
+- **Books list** - View available collections
+- **Headings** - Navigate surahs (Qur'an) or books/chapters (Hadith)
+- **Excerpts** - Read verses or hadith with Arabic \u0026 English translation
+
+**Features:**
+- Static export ready (all pages pre-generated)
+- Arabic text with IBM Plex Sans Arabic font
+- RTL text rendering
+- Dark mode support
+- Breadcrumb navigation
+
+```bash
+# Build static site
+bun run build  # Generates ~120 static HTML pages in out/
+```
+
 ## 📖 Project History
 
 IlmTest evolved from a series of BlackBerry 10 applications developed in collaboration with students of knowledge:

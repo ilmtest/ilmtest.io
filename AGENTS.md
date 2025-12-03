@@ -17,11 +17,66 @@ Thanks and happy hacking!
 
 ---
 
-## ACTIVE CONTEXT: v1 Data Structure Optimizations (2025-12-01)
+## ACTIVE CONTEXT: v1 Browse UI \u0026 Type Safety (2025-12-03)
 
-### Current Status: **✅ OPTIMIZATIONS COMPLETE** → Ready for Phase 2 (Core API/Data Access)
+### Current Status: **✅ PHASE 2 \u0026 3 COMPLETE** → Minimal browse UI live!
 
-The v1 data structure has been **successfully optimized** with all tests passing (73/73) and build working. Migration regenerated with optimized structure.
+Successfully completed type refactoring with discriminated unions and implemented minimal browse UI for Qur'an and Hadith navigation.
+
+### What Was Accomplished (December 2-3, 2025)
+
+#### Phase 2: Type Refactoring \u0026 Migration Improvements ✅
+
+**1. Discriminated Unions for Excerpt**
+- Created strict types: `VerseExcerpt`, `HadithExcerpt`, `ChapterTitleExcerpt`, `TextExcerpt`
+- `meta` field now properly typed based on `type` discriminator
+- Type guards work automatically: `'type' in item \u0026\u0026 item.type === 'verse'`
+
+**2. Strict Heading Types**
+- `QuranHeading`: `type: 'quran'` with required `surah`
+- `HadithHeading`: `type: 'hadith'` with required `volume`, `pp`, optional `parent`
+- Replaced messy optional fields with clean discriminated unions
+
+**3. GlobalIndex Versioning**
+- Added `version: "1.0.0"` field for cache busting
+- Migration utilities updated to include version in all indexes
+
+**4. Hadith Headings Extraction Fixed**
+- Fixed `download-old-data.ts` to dynamically detect extracted JSON files
+- Updated `loadOldHadithData` to extract headings from `excerpts.json`
+- **Successfully extracted 4,146 hadith headings** from Sahih al-Bukhari
+
+**Migration Results:**
+- Qur'an: 6,236 verses + 114 surahs ✓
+- Bukhari: 10,967 excerpts + 4,146 headings ✓
+- All with correct type discriminators ✓
+
+#### Phase 3: Minimal Browse UI ✅
+
+**1. Data Access Layer** (`src/lib/data-loader.ts`)
+- `loadBooks()`, `loadBookHeadings()`, `loadBookContentChunk()`
+- `loadHeadingExcerpts()` - Smart chunk loading using `indexRange`
+- `getTopLevelHeadings()` - Filters `parent=null` for hadith, returns all for Qur'an
+
+**2. Three-Level Navigation**
+- `/browse` - Books list showing Qur'an \u0026 Sahih al-Bukhari
+- `/browse/[bookId]` - Headings list (114 surahs OR top-level hadith books)
+- `/browse/[bookId]/[headingId]` - Excerpt view with verses/hadith
+
+**3. Static Export Ready**
+- Added `generateStaticParams()` to all dynamic routes
+- Pre-generates paths for static export (`output: 'export'`)
+- Build creates ~120 static HTML pages
+
+**4. UI Features**
+- Arabic text with IBM Plex Sans Arabic font from Google Fonts
+- RTL support with `dir="rtl"` and `.font-arabic` class
+- Responsive layout with dark mode support
+- Breadcrumb navigation
+- Chapter titles displayed inline with excerpts
+- Metadata display (verse #, hadith #, page numbers)
+
+### Current Status: **✅ BROWSE UI COMPLETE** → Ready for Phase 2 (Core API/Data Access)
 
 ### What Was Accomplished Today
 
@@ -254,25 +309,6 @@ public/data/
 
 5. **Update Checklist**
    - Check off completed items in `docs/task.md` under "Milestone v1.0"
-
-6. **Git Commit**
-   Use this commit message:
-   ```
-   feat(data): implement v1 unified data architecture with TDD
-   
-   - Design unified Excerpt model for Qur'an, Hadith, and future texts
-   - Create minimal v1 TypeScript types (core browsing only)
-   - Extract migration utilities (Arabic conversion, index generation)
-   - Implement Bun-based migration scripts with dependency injection
-   - Add comprehensive test suite (4 test files, 50+ tests)
-   - Document v2-v5 roadmap (tags, cross-refs, multi-translation, search)
-   - Use TDD approach with it.each() for parametrized tests
-   
-   Deferred to v2+: tags, narrator profiles, tafsir cross-refs, 
-   multi-translation, transliteration, search, audio recitations
-   
-   Refs: docs/implementation_plan.md, docs/future-roadmap.md
-   ```
 
 ### Critical Files to Reference
 

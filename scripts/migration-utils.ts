@@ -144,7 +144,7 @@ export type OldHadithExcerpt = {
 /**
  * Transform old hadith excerpt to new unified format
  */
-export function transformHadithExcerpt(excerpt: OldHadithExcerpt, bookId: number): Excerpt {
+export function transformHadithExcerpt(excerpt: OldHadithExcerpt): Excerpt {
     const hadithNum = extractHadithNumber(excerpt.nass);
     const isChapterTitle =
         excerpt.type === 2 || excerpt.type === 1 || excerpt.id.startsWith('C') || excerpt.id.startsWith('B');
@@ -176,6 +176,7 @@ export function transformQuranHeading(old: OldQuranHeading): Heading {
         surah: old.num,
         text: old.text,
         translator: old.translator,
+        type: 'quran',
     };
 }
 
@@ -344,6 +345,7 @@ export function extractHadithHeadings(headings: OldHadithHeading[], content: Old
             pp: h.pp ?? 0,
             text: h.text,
             translator: h.translator,
+            type: 'hadith',
             volume: h.volume ?? 1,
             ...(h.parent ? { parent: `T${h.parent}` } : {}),
             indexRange: { end: endIndex, start: startIndex },
@@ -384,7 +386,7 @@ export function generateGlobalIndex(content: any[], chunkSize: number): import('
         }
     });
 
-    return { chunkSize, hadiths, ids, pages, surahs, totalItems: content.length };
+    return { chunkSize, hadiths, ids, pages, surahs, totalItems: content.length, version: '1.0.0' };
 }
 
 // ============================================================================
@@ -400,7 +402,7 @@ export function transformQuranHeadings(oldHeadings: OldQuranHeading[], content: 
     const surahRanges = new Map<number, { start: number; end: number }>();
 
     content.forEach((item, index) => {
-        if (item.type === 'verse' && item.meta && 'surah' in item.meta) {
+        if ('type' in item && item.type === 'verse' && item.meta && 'surah' in item.meta) {
             const surah = item.meta.surah;
             if (!surahRanges.has(surah)) {
                 surahRanges.set(surah, { end: index, start: index });
@@ -431,6 +433,6 @@ export function transformQuranHeadings(oldHeadings: OldQuranHeading[], content: 
     });
 }
 
-export function transformHadithContent(oldContent: OldHadithExcerpt[], bookId: number): Excerpt[] {
-    return oldContent.map((old) => transformHadithExcerpt(old, bookId));
+export function transformHadithContent(oldContent: OldHadithExcerpt[]): Excerpt[] {
+    return oldContent.map((old) => transformHadithExcerpt(old));
 }

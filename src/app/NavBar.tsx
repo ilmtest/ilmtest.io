@@ -9,6 +9,7 @@ export default function Navbar({ className }: { className?: string }) {
         <div className={cn('fixed inset-x-0 top-10 z-50 mx-auto max-w-2xl', className)}>
             <Menu setActive={setActive}>
                 <HoveredLink href="/">Home</HoveredLink>
+                <HoveredLink href="/browse">Browse</HoveredLink>
                 <MenuItem active={active} item="About" setActive={setActive}>
                     <div className="flex flex-col space-y-4 text-sm">
                         <HoveredLink href="/about">Who Are We?</HoveredLink>

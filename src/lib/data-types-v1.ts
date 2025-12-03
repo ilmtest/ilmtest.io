@@ -38,28 +38,75 @@ export type TranslatorsManifest = { translators: Translator[] };
 // ============================================================================
 
 /**
- * Excerpt: A single unit of text (verse, hadith, chapter title, or prose)
+ * Metadata for Quranic verses
  */
-export type Excerpt = {
-    id: string; // Unique within book (e.g., "1:1", "P42", "C17")
-    type?: 'verse' | 'hadith' | 'chapter-title'; // Optional: omit for generic text/prose, foreword
-    nass: string; // Arabic text
-    text: string; // English translation
-    translator: number; // Translator ID
-    page: number; // Page number in source
-    meta: VerseMetadata | HadithMetadata; // Type-specific metadata
-};
-
-type CitationMetadata = {
-    volume: number;
-    pp: number; // Part page (for citation like "9/5")
-};
-
 export type VerseMetadata = { surah: number; verse: number };
 
-export type HadithMetadata = CitationMetadata & {
+/**
+ * Metadata for hadith and other citation-based texts
+ */
+export type HadithMetadata = {
+    volume: number;
+    pp: number; // Part page (for citation like "9/5")
     hadithNum?: number; // Extracted from nass (e.g., 1, 49, 7563)
 };
+
+/**
+ * A Quranic verse excerpt
+ */
+export type VerseExcerpt = {
+    type: 'verse';
+    id: string;
+    nass: string;
+    text: string;
+    translator: number;
+    page: number;
+    meta: VerseMetadata;
+};
+
+/**
+ * A hadith excerpt
+ */
+export type HadithExcerpt = {
+    type: 'hadith';
+    id: string;
+    nass: string;
+    text: string;
+    translator: number;
+    page: number;
+    meta: HadithMetadata;
+};
+
+/**
+ * A chapter title excerpt
+ */
+export type ChapterTitleExcerpt = {
+    type: 'chapter-title';
+    id: string;
+    nass: string;
+    text: string;
+    translator: number;
+    page: number;
+    meta: HadithMetadata; // Hadith books use volume/pp for chapter titles
+};
+
+/**
+ * Generic text/prose excerpt (introductions, forewords, etc.)
+ * Note: No type field - its absence indicates generic text
+ */
+export type TextExcerpt = {
+    id: string;
+    nass: string;
+    text: string;
+    translator: number;
+    page: number;
+    meta: HadithMetadata; // Still needs volume/pp for citation
+};
+
+/**
+ * Unified excerpt type - discriminated union
+ */
+export type Excerpt = VerseExcerpt | HadithExcerpt | ChapterTitleExcerpt | TextExcerpt;
 
 export type ContentManifest = { content: Excerpt[] };
 
@@ -67,18 +114,15 @@ export type ContentManifest = { content: Excerpt[] };
 // Headings (Table of Contents)
 // ============================================================================
 
-export type Heading = {
-    id: string; // e.g., "1", "B5", "C17"
+/**
+ * Common fields for all heading types
+ */
+type BaseHeading = {
+    id: string;
     nass: string;
     text: string;
     translator: number;
-    // Quran-specific
-    surah?: number;
-    // Hadith/other-specific
-    volume?: number;
-    pp?: number;
-    page?: number;
-    parent?: string; // ID of parent heading (e.g., "T5")
+    page: number;
     /**
      * The range of content IDs covered by this heading (inclusive).
      * Used for logical grouping and reverse lookup.
@@ -96,9 +140,34 @@ export type Heading = {
     pageRange?: { start: number; end: number };
 };
 
+/**
+ * Quran heading (Surah)
+ */
+export type QuranHeading = BaseHeading & { type: 'quran'; surah: number };
+
+/**
+ * Hadith heading (Book/Chapter title)
+ */
+export type HadithHeading = BaseHeading & {
+    type: 'hadith';
+    volume: number;
+    pp: number;
+    parent?: string; // ID of parent heading (e.g., "T5" for nested chapters)
+};
+
+/**
+ * Unified heading type - discriminated union
+ */
+export type Heading = QuranHeading | HadithHeading;
+
 export type HeadingsManifest = { headings: Heading[] };
 
 export type GlobalIndex = {
+    /**
+     * Version of the index structure for cache busting
+     * Format: "major.minor.patch" following semver
+     */
+    version: string;
     /**
      * Map of Hadith Number to Global Index
      * Example: "1" -> 105

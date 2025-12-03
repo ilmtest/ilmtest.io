@@ -27,30 +27,42 @@
   - [x] Consolidated global indexes
   - [x] Optimized headings with ranges
 
-### Phase 2: Core API/Data Access
-- [ ] Refactor Data Types
-  - [ ] Implement discriminated unions for Excerpt
-  - [ ] Create strict Heading types (QuranHeading, HadithHeading)
-  - [ ] Remove unused types
-- [ ] Update Migration Scripts
-  - [ ] Fix `type` assignment logic (omit for generic text)
-  - [ ] Generate `toc.json` (lightweight headings)
-  - [ ] Optimize `indexes.json` (remove `ids` map)
-  - [ ] Add `version` to GlobalIndex
-  - [ ] Update `download-old-data.ts` for robust zip handling
-- [ ] Implement data loading utilities
-  - [ ] Load books.json
-  - [ ] Load translators.json
-  - [ ] Load specific book content
-  - [ ] Load specific book headings
-  - [ ] Load indexes
-- [ ] Implement lookup functions
-  - [ ] getBookById(id)
-  - [ ] getExcerptById(bookId, eid)
-  - [ ] getExcerptByVerse(surah, verse)
-  - [ ] getExcerptByHadithNum(bookId, num)
-  - [ ] getHeadingsByBook(bookId)
-  - [ ] getExcerptsByPage(bookId, page)
+### Phase 2: Core API/Data Access ✅
+- [x] Refactor Data Types
+  - [x] Implement discriminated unions for Excerpt (VerseExcerpt, HadithExcerpt, ChapterTitleExcerpt, TextExcerpt)
+  - [x] Create strict Heading types (QuranHeading, HadithHeading)
+  - [x] Add `version` to GlobalIndex
+  - [x] Update migration utilities for new types
+- [x] Update Migration Scripts
+  - [x] Fix hadith headings extraction (4,146 headings extracted)
+  - [x] Fix `download-old-data.ts` for dynamic JSON file detection
+  - [x] Add `version: "1.0.0"` to GlobalIndex output
+  - [ ] Generate `toc.json` (deferred)
+- [x] Implement data loading utilities
+  - [x] Load books.json
+  - [x] Load book headings
+  - [x] Load content chunks
+  - [x] Load heading excerpts with smart chunk loading
+  - [x] Top-level heading filtering
+
+### Phase 3: Minimal Browse UI ✅
+- [x] Books list page (`/browse`)
+  - [x] Display all books with Arabic \u0026 English
+  - [x] generateStaticParams for static export
+- [x] Headings list page (`/browse/[bookId]`)
+  - [x] Show top-level headings (surahs or hadith books)
+  - [x] generateStaticParams for all books
+- [x] Excerpts view page (`/browse/[bookId]/[headingId]`)
+  - [x] Load excerpts using indexRange
+  - [x] Display chapter titles inline
+  - [x] Arabic font support (IBM Plex Sans Arabic)
+  - [x] RTL text rendering
+  - [x] generateStaticParams for all headings
+- [x] Navigation \u0026 Styling
+  - [x] Breadcrumb navigation
+  - [x] Added Browse link to navbar
+  - [x] Dark mode support
+  - [x] Responsive layout
 
 ### Phase 3: Testing (TDD)
 - [ ] Unit tests for data types

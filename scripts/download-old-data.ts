@@ -45,18 +45,25 @@ export async function downloadOldData(bookId: number, outputDir: string): Promis
 
             await proc.exited;
 
-            // Find the extracted json file (assuming it might be named differently)
-            // For now, we assume the zip contains the content-old.json or similar
-            // Let's look for any .json file in the outputDir that isn't the zip
-            // But to be safe and simple, let's assume the user's zip structure matches what we need
-            // or we just return the path to the expected content-old.json if it exists
+            // Find the extracted JSON file dynamically
+            const { readdir } = await import('node:fs/promises');
+            const files = await readdir(outputDir);
+            const jsonFile = files.find((f) => f.endsWith('.json') && f !== filename);
+
+            if (!jsonFile) {
+                throw new Error(`No JSON file found in ${outputDir} after extracting zip`);
+            }
+
+            console.log(`   ✓ Found extracted JSON: ${jsonFile}`);
 
             // Clean up zip
             await Bun.file(downloadPath).delete();
+
+            return join(outputDir, jsonFile);
         }
 
-        // Return expected path
-        return join(outputDir, 'content-old.json');
+        // Return expected path for non-zip downloads
+        return downloadPath;
     } catch (error) {
         console.error(`❌ Error downloading book ${bookId}:`, error);
         throw error;
