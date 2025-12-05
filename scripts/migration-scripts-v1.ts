@@ -16,21 +16,75 @@ import {
     init,
     type Translator as LegacyTranslator,
 } from '@ilmtest/ilmtest-sdk-js';
-import type { Translator } from '../src/lib/data-types-v1';
+import type { Excerpt, Heading, Translator } from '../src/lib/data-types-v1';
 import {
-    extractHadithHeadings,
+    extractHadithNumber,
     generateGlobalIndex,
-    generateHadithNumIndex,
-    generatePageIndex,
     generateSurahVerseIndex,
-    type OldHadithExcerpt,
-    type OldHadithHeading,
     type OldQuranExcerpt,
     type OldQuranHeading,
-    transformHadithContent,
     transformQuranContent,
     transformQuranHeadings,
 } from './migration-utils';
+
+// ============================================================================
+// HuggingFace Excerpts Format Types (Input)
+// ============================================================================
+
+/**
+ * Set if this is a title/heading of a book or chapter
+ */
+type HFExcerptType = 'book' | 'chapter';
+
+enum AITranslator {
+    ClaudeSonnet45 = 891,
+    Gemini3 = 890,
+    OpenAIGpt51Thinking = 889,
+    OpenAIGpt5 = 879,
+    Grok41ThinkingBeta = 892,
+}
+
+type HFExcerpt = {
+    /** Unique ID of this excerpt */
+    id: string;
+    /** The Arabic text of the excerpt */
+    nass: string;
+    /** The page number in the book that this text was extracted from. */
+    from: number;
+    /** Set if this is a title/heading of a book or chapter */
+    type?: HFExcerptType;
+    /** The page number in the book that this text spans until (if different from the starting page) */
+    to?: number;
+    /** Volume number for this page */
+    vol: number;
+    /** The page in the volume (ie: this value would be 55 if the excerpt is from page 55 in the 7th volume). This is useful for citations. */
+    vp: number;
+    /** The translated nass. */
+    text: string;
+    /** The AI model that translated it. */
+    translator: AITranslator;
+    /** The last time this translation was updated. */
+    lastUpdatedAt: number;
+};
+
+type HFHeading = {
+    /** Unique identifier */
+    id: string;
+    /** The Arabic text */
+    nass: string;
+    /** The page where content starts */
+    from: number;
+    /** Parent heading ID */
+    parent?: string;
+    /** The translated text */
+    text: string;
+    /** The AI model that translated it */
+    translator: AITranslator;
+    /** The last time this translation was updated */
+    lastUpdatedAt: number;
+};
+
+type HFExcerpts = { excerpts: HFExcerpt[]; headings: HFHeading[]; footnotes?: HFExcerpt[] };
 
 // ============================================================================
 // Core Migration Functions (Pure - Accept Data, Return Data)
@@ -44,69 +98,211 @@ export function migrateQuranData(oldData: { content: OldQuranExcerpt[]; headings
         oldData.content.map((e) => ({ id: e.id, page: e.page, surah: e.surah, verse: e.verse })),
     );
 
-    const pageIndex = generatePageIndex(oldData.content);
+    // Generate page index
+    const pages: Record<string, { start: number; end: number }> = {};
+    newContent.forEach((item, index) => {
+        const pageKey = item.page.toString();
+        if (!pages[pageKey]) {
+            pages[pageKey] = { end: index, start: index };
+        } else {
+            pages[pageKey].end = index;
+        }
+    });
 
-    return { content: newContent, headings: newHeadings, indexes: { page: pageIndex, surahVerse: surahVerseIndex } };
+    return { content: newContent, headings: newHeadings, indexes: { page: pages, surahVerse: surahVerseIndex } };
 }
 
-export function migrateHadithData(oldData: { content: OldHadithExcerpt[]; headings: OldHadithHeading[] }) {
-    const newContent = transformHadithContent(oldData.content);
-    const newHeadings = extractHadithHeadings(oldData.headings, oldData.content);
+/**
+ * Transform HuggingFace excerpt to internal Excerpt format
+ */
+function transformHFExcerpt(hf: HFExcerpt): Excerpt {
+    const hadithNum = extractHadithNumber(hf.nass);
+    const isChapterTitle = hf.type === 'book' || hf.type === 'chapter';
 
-    const hadithNumIndex = generateHadithNumIndex(
-        oldData.content.map((e) => ({
-            id: e.id,
-            nass: e.nass,
-            page: e.page,
-            type: e.type === 2 || e.id.startsWith('C') || e.id.startsWith('B') ? 'chapter-title' : 'hadith',
-        })),
-    );
+    if (isChapterTitle) {
+        return {
+            id: hf.id,
+            meta: { pp: hf.vp, volume: hf.vol },
+            nass: hf.nass,
+            page: hf.from,
+            text: hf.text,
+            translator: hf.translator,
+            type: 'chapter-title',
+        };
+    }
 
-    const pageIndex = generatePageIndex(oldData.content);
+    if (hadithNum) {
+        return {
+            id: hf.id,
+            meta: { hadithNum, pp: hf.vp, volume: hf.vol },
+            nass: hf.nass,
+            page: hf.from,
+            text: hf.text,
+            translator: hf.translator,
+            type: 'hadith',
+        };
+    }
 
-    return { content: newContent, headings: newHeadings, indexes: { hadithNum: hadithNumIndex, page: pageIndex } };
+    // Generic text/prose (no type field)
+    return {
+        id: hf.id,
+        meta: { pp: hf.vp, volume: hf.vol },
+        nass: hf.nass,
+        page: hf.from,
+        text: hf.text,
+        translator: hf.translator,
+    };
+}
+
+/**
+ * Find the start index for a heading by page number
+ */
+function findHeadingStartIndex(from: number, pageMap: Map<number, number>): number | undefined {
+    let startIndex = pageMap.get(from);
+
+    // Fallback: If exact page has no content, try next few pages
+    if (startIndex === undefined) {
+        for (let p = from + 1; p <= from + 10; p++) {
+            if (pageMap.has(p)) {
+                startIndex = pageMap.get(p);
+                break;
+            }
+        }
+    }
+
+    return startIndex;
+}
+
+/**
+ * Calculate end index for a heading based on next headings in the list
+ */
+function calculateHeadingEndIndex(
+    headingIndex: number,
+    headings: Array<{ parent?: string; startIndex: number }>,
+    contentLength: number,
+): number {
+    const current = headings[headingIndex];
+    const isBook = !current.parent;
+    let endIndex = contentLength - 1;
+
+    for (let j = headingIndex + 1; j < headings.length; j++) {
+        const next = headings[j];
+        const nextIsBook = !next.parent;
+
+        if (isBook && nextIsBook) {
+            // A Book ends when the next Book starts
+            endIndex = next.startIndex - 1;
+            break;
+        } else if (!isBook) {
+            // A Chapter ends when the next Chapter OR next Book starts
+            if (nextIsBook || next.startIndex > current.startIndex) {
+                endIndex = next.startIndex - 1;
+                break;
+            }
+        }
+    }
+
+    // Ensure valid range
+    return Math.max(endIndex, current.startIndex);
+}
+
+/**
+ * Transform HuggingFace headings to internal Heading format
+ */
+function transformHFHeadings(hfHeadings: HFHeading[], content: Excerpt[]): Heading[] {
+    // Map page numbers to the first content index on that page
+    const pageMap = new Map<number, number>();
+    content.forEach((item, index) => {
+        if (!pageMap.has(item.page)) {
+            pageMap.set(item.page, index);
+        }
+    });
+
+    // Determine start index for each heading
+    const headingsWithIndex = hfHeadings
+        .map((h) => {
+            const startIndex = findHeadingStartIndex(h.from, pageMap);
+            return startIndex !== undefined ? { ...h, startIndex } : { ...h, startIndex: -1 };
+        })
+        .filter((h) => h.startIndex !== -1);
+
+    // Sort by index to ensure linear processing order
+    headingsWithIndex.sort((a, b) => a.startIndex - b.startIndex);
+
+    // Calculate ranges and transform to Heading format
+    return headingsWithIndex.map((h, i, arr) => {
+        const startIndex = h.startIndex;
+        const endIndex = calculateHeadingEndIndex(i, arr, content.length);
+
+        const startId = content[startIndex].id;
+        const endId = content[endIndex].id;
+        const startPage = content[startIndex].page;
+        const endPage = content[endIndex].page;
+
+        // Extract volume and pp from first content item in range
+        const firstContent = content[startIndex];
+        const meta = 'meta' in firstContent ? (firstContent as any).meta : {};
+
+        return {
+            id: h.id,
+            indexRange: { end: endIndex, start: startIndex },
+            nass: h.nass,
+            page: h.from,
+            pageRange: { end: endPage, start: startPage },
+            pp: meta.pp ?? 0,
+            range: { end: endId, start: startId },
+            text: h.text,
+            translator: h.translator,
+            type: 'hadith' as const,
+            volume: meta.volume ?? 1,
+            ...(h.parent ? { parent: h.parent } : {}),
+        };
+    });
+}
+
+/**
+ * Migrate HuggingFace Excerpts format directly to internal format
+ */
+export function migrateHFExcerptsData(hfData: HFExcerpts) {
+    const content = hfData.excerpts.map(transformHFExcerpt);
+    const headings = transformHFHeadings(hfData.headings, content);
+
+    // Generate hadith number index
+    const hadiths: Record<string, number> = {};
+    content.forEach((item, index) => {
+        if ('type' in item && item.type === 'hadith' && 'meta' in item && item.meta.hadithNum) {
+            hadiths[item.meta.hadithNum.toString()] = index;
+        }
+    });
+
+    // Generate page index
+    const pages: Record<string, { start: number; end: number }> = {};
+    content.forEach((item, index) => {
+        const pageKey = item.page.toString();
+        if (!pages[pageKey]) {
+            pages[pageKey] = { end: index, start: index };
+        } else {
+            pages[pageKey].end = index;
+        }
+    });
+
+    return { content, headings, indexes: { hadithNum: hadiths, page: pages } };
 }
 
 // ============================================================================
 // File I/O Functions (Side Effects)
 // ============================================================================
 
-async function loadOldHadithData(inputPath: string) {
+async function loadHFExcerpts(inputPath: string): Promise<HFExcerpts> {
     const file = Bun.file(inputPath);
     const data = await file.json();
 
-    // Handle the new format with 'excerpts' array
-    if (data.excerpts && Array.isArray(data.excerpts)) {
-        // Transform the new format to the old format expected by migration
-        const content = data.excerpts
-            // Include all items - hadith and prose don't have type field, only chapter titles do
-            .filter((e: any) => e.id && (e.arabic || e.nass)) // Just ensure basic data exists
-            .map((e: any) => ({
-                id: e.id,
-                nass: e.arabic,
-                page: e.from, // Use 'from' field as the page number
-                text: e.translation,
-                translator: e.translator,
-                type: e.type, // Will be undefined for hadith/prose, 1 or 2 for chapter titles
-            }));
-
-        // Extract headings from the data
-        const headings = (data.headings || []).map((h: any) => ({
-            from: h.from, // Use 'from' field which indicates where content starts
-            id: h.id,
-            nass: h.nass || h.arabic,
-            parent: h.parent,
-            pp: h.pp,
-            text: h.text || h.translation,
-            translator: h.translator,
-            volume: h.volume,
-        }));
-
-        return { content, headings };
+    // Validate required fields
+    if (!data.excerpts || !Array.isArray(data.excerpts)) {
+        throw new Error('Invalid HuggingFace excerpts format: missing excerpts array');
     }
 
-    // Fallback to old format
-    return data;
+    return { excerpts: data.excerpts, footnotes: data.footnotes, headings: data.headings || [] };
 }
 
 async function writeContentFile(outputPath: string, content: any[]) {
@@ -264,8 +460,8 @@ export async function migrateHadith(inputPath: string, outputDir: string, bookId
         }
     }
 
-    const oldData = await loadOldHadithData(dataPath);
-    const migrated = migrateHadithData(oldData);
+    const hfData = await loadHFExcerpts(dataPath);
+    const migrated = migrateHFExcerptsData(hfData);
 
     // 4. Generate Global Index with translators
     const CHUNK_SIZE = 500;
