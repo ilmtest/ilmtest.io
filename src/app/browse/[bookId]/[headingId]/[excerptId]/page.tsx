@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { Badge } from '@/components/Badge';
+import { MarkdownText } from '@/components/MarkdownText';
 import {
     findHeadingById,
     getTopLevelHeadings,
@@ -99,7 +100,7 @@ export default async function ExcerptPage({ params }: { params: Params }) {
                         href={`/browse/${bookId}/${headingId}`}
                         className="text-blue-600 hover:underline dark:text-blue-400"
                     >
-                        {heading.text}
+                        <MarkdownText>{heading.text}</MarkdownText>
                     </Link>
                     <span className="mx-2 text-gray-500">/</span>
                     <span className="text-gray-700 dark:text-gray-300">Excerpt {excerptId}</span>
@@ -113,7 +114,9 @@ export default async function ExcerptPage({ params }: { params: Params }) {
                     </p>
 
                     {/* English Translation */}
-                    <p className="mb-6 text-gray-700 text-xl leading-relaxed dark:text-gray-300">{excerpt.text}</p>
+                    <p className="mb-6 text-gray-700 text-xl leading-relaxed dark:text-gray-300">
+                        <MarkdownText>{excerpt.text}</MarkdownText>
+                    </p>
 
                     {/* Metadata & Translator */}
                     <div className="flex flex-wrap items-center gap-4 border-gray-200 border-t pt-6 text-gray-500 dark:border-gray-700 dark:text-gray-400">
@@ -151,7 +154,7 @@ export default async function ExcerptPage({ params }: { params: Params }) {
                         href={`/browse/${bookId}/${headingId}`}
                         className="inline-block rounded-lg bg-blue-600 px-6 py-3 text-white transition-colors hover:bg-blue-700"
                     >
-                        ← Back to {heading.text}
+                        ← Back to <MarkdownText>{heading.text}</MarkdownText>
                     </Link>
                 </div>
             </div>

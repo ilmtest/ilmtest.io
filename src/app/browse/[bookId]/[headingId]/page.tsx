@@ -1,6 +1,7 @@
 import { Link as LinkIcon } from 'lucide-react';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
+import { MarkdownText } from '@/components/MarkdownText';
 import {
     findHeadingById,
     getTopLevelHeadings,
@@ -82,12 +83,16 @@ export default async function HeadingExcerptsPage({ params }: { params: Params }
                         {book.title}
                     </Link>
                     <span className="mx-2 text-gray-500">/</span>
-                    <span className="text-gray-700 dark:text-gray-300">{heading.text}</span>
+                    <span className="text-gray-700 dark:text-gray-300">
+                        <MarkdownText>{heading.text}</MarkdownText>
+                    </span>
                 </div>
 
                 {/* Heading Header */}
                 <div className="mb-8 border-gray-200 border-b pb-6 dark:border-gray-700">
-                    <h1 className="mb-3 font-bold text-3xl">{heading.text}</h1>
+                    <h1 className="mb-3 font-bold text-3xl">
+                        <MarkdownText>{heading.text}</MarkdownText>
+                    </h1>
                     <p className="mb-4 font-arabic text-2xl text-gray-700 dark:text-gray-300" dir="rtl">
                         {heading.nass}
                     </p>
@@ -116,7 +121,9 @@ export default async function HeadingExcerptsPage({ params }: { params: Params }
                                 >
                                     <div className="flex items-start justify-between gap-4">
                                         <div className="flex-1">
-                                            <h2 className="mb-1 font-semibold text-xl">{excerpt.text}</h2>
+                                            <h2 className="mb-1 font-semibold text-xl">
+                                                <MarkdownText>{excerpt.text}</MarkdownText>
+                                            </h2>
                                             <p
                                                 className="font-arabic text-gray-700 text-lg dark:text-gray-300"
                                                 dir="rtl"
@@ -151,7 +158,7 @@ export default async function HeadingExcerptsPage({ params }: { params: Params }
 
                                 {/* English Translation */}
                                 <p className="mb-4 text-gray-700 text-lg leading-relaxed dark:text-gray-300">
-                                    {excerpt.text}
+                                    <MarkdownText>{excerpt.text}</MarkdownText>
                                 </p>
 
                                 {/* Metadata */}

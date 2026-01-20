@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
+import { MarkdownText } from '@/components/MarkdownText';
 import { getTopLevelHeadings, loadBookHeadings, loadBooks } from '@/lib/data-loader';
 
 type Params = Promise<{ bookId: string }>;
@@ -63,7 +64,9 @@ export default async function BookHeadingsPage({ params }: { params: Params }) {
                         >
                             <div className="flex items-start justify-between gap-4">
                                 <div className="flex-1">
-                                    <p className="mb-1 font-medium text-lg">{heading.text}</p>
+                                    <p className="mb-1 font-medium text-lg">
+                                        <MarkdownText>{heading.text}</MarkdownText>
+                                    </p>
                                     <p className="font-arabic text-gray-700 text-xl dark:text-gray-300" dir="rtl">
                                         {heading.nass}
                                     </p>
